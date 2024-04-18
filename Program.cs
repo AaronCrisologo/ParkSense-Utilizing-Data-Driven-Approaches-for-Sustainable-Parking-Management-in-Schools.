@@ -24,6 +24,7 @@ namespace ParkingManagementSystem
     {
         private List<ParkingSlot> slots;
         private List<string> parkingLog;
+        private double parkingRatePerHour = 30; // Parking rate per hour
 
         public ParkingLot(int capacity)
         {
@@ -45,9 +46,10 @@ namespace ParkingManagementSystem
                     slot.IsOccupied = true;
                     slot.VehicleNumber = vehicleNumber;
                     slot.EntryTime = DateTime.Now;
-                    string logEntry = $"Vehicle {vehicleNumber} parked at slot {slot.SlotNumber} at {slot.EntryTime}";
+                    string logEntry = $"Vehicle {vehicleNumber} parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
                     parkingLog.Add(logEntry);
                     Console.WriteLine(logEntry);
+                    Console.WriteLine("Your car has been parked");
                     return true;
                 }
             }
@@ -65,9 +67,13 @@ namespace ParkingManagementSystem
                     slot.IsOccupied = false;
                     slot.VehicleNumber = ""; // Assign empty string
                     slot.ExitTime = DateTime.Now;
-                    string logEntry = $"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {slot.ExitTime - slot.EntryTime}";
+                    TimeSpan duration = slot.ExitTime - slot.EntryTime;
+                    double totalHours = duration.TotalHours;
+                    double totalCost = totalHours < 1 ? parkingRatePerHour : totalHours * parkingRatePerHour;
+                    string logEntry = $"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {duration}. Total Cost: {totalCost} PHP";
                     parkingLog.Add(logEntry);
                     Console.WriteLine(logEntry);
+                    Console.WriteLine("Drive safely");
                     return true;
                 }
             }
@@ -79,16 +85,17 @@ namespace ParkingManagementSystem
         public void DisplayParkingStatus()
         {
             Console.WriteLine("Parking Status:");
-            Console.WriteLine("+-------------+-----------+----------------+");
-            Console.WriteLine("| Slot Number |  Status   | Vehicle Number |");
-            Console.WriteLine("+-------------+-----------+----------------+");
+            Console.WriteLine("+-------------+-----------+----------------+-----------------+");
+            Console.WriteLine("| Slot Number |  Status   | Vehicle Number |    Parking Rate |");
+            Console.WriteLine("+-------------+-----------+----------------+-----------------+");
             foreach (var slot in slots)
             {
                 string status = slot.IsOccupied ? "Occupied" : "Empty";
                 string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
-                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} |");
+                string parkingRate = slot.IsOccupied ? parkingRatePerHour.ToString() : "-"; // Display parking rate only if occupied
+                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {parkingRate,-15} |");
             }
-            Console.WriteLine("+-------------+-----------+----------------+");
+            Console.WriteLine("+-------------+-----------+----------------+-----------------+");
         }
 
         // Method to display parking log
@@ -109,32 +116,45 @@ namespace ParkingManagementSystem
             // Create a parking lot with 10 slots
             ParkingLot parkingLot = new ParkingLot(10);
 
-            // Example usage
-            parkingLot.DisplayParkingStatus();
+            do
+            {
+                Console.WriteLine("-----Welcome to Parksense-----");
+                Console.WriteLine("Would you like to park your car?,   press 1");
+                Console.WriteLine("Do you want to take your car?,      press 2");
+                Console.WriteLine("Display the parking area,           press 3");
+                Console.WriteLine("Display the logs,                   press 4\n");
+                Console.Write("What do you want to do: ");
+                int dec = int.Parse(Console.ReadLine());
+                Console.WriteLine(" ");
+                switch (dec)
+                {
+                    case 1:
+                        Console.Write("Enter your car's license number: ");
+                        String num = Console.ReadLine();
+                        parkingLot.ParkVehicle(num);
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    case 2:
+                        Console.Write("Input your car's license number: ");
+                        String car = Console.ReadLine();
+                        parkingLot.LeaveParking(car);
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    case 3:
+                        parkingLot.DisplayParkingStatus();
+                        break;
+                    case 4:
+                        parkingLot.DisplayParkingLog();
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid input, please try again");
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                }
 
-            parkingLot.ParkVehicle("ABC123");
-            parkingLot.ParkVehicle("XYZ456");
+            } while (true);
 
-            parkingLot.DisplayParkingStatus();
-
-            parkingLot.LeaveParking("ABC123");
-
-            parkingLot.DisplayParkingStatus();
-
-            // Adding a car to the parking lot
-            parkingLot.ParkVehicle("DEF789");
-
-            // Removing a car from the parking lot
-            parkingLot.LeaveParking("XYZ456");
-
-            parkingLot.DisplayParkingStatus();
-            parkingLot.ParkVehicle("12333");
-            parkingLot.DisplayParkingStatus();
-            parkingLot.LeaveParking("12333");
-            parkingLot.DisplayParkingStatus();
-
-            // Displaying parking log
-            parkingLot.DisplayParkingLog();
         }
     }
 }
