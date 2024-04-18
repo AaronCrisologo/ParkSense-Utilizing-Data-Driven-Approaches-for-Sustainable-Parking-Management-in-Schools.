@@ -66,14 +66,22 @@ namespace ParkingManagementSystem
         }
 
         // Method to display parking status
+        // Method to display parking status
         public void DisplayParkingStatus()
         {
             Console.WriteLine("Parking Status:");
+            Console.WriteLine("+-------------+-----------+----------------+");
+            Console.WriteLine("| Slot Number |  Status   | Vehicle Number |");
+            Console.WriteLine("+-------------+-----------+----------------+");
             foreach (var slot in slots)
             {
-                Console.WriteLine($"Slot {slot.SlotNumber}: {(slot.IsOccupied ? "Occupied" : "Empty")}");
+                string status = slot.IsOccupied ? "Occupied" : "Empty";
+                string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
+                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} |");
             }
+            Console.WriteLine("+-------------+-----------+----------------+");
         }
+
     }
 
     class Program
