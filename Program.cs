@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace ParkingManagementSystem
@@ -9,6 +9,8 @@ namespace ParkingManagementSystem
         public int SlotNumber { get; set; }
         public string VehicleNumber { get; set; } = ""; // Initialize to empty string
         public bool IsOccupied { get; set; }
+        public DateTime EntryTime { get; set; }
+        public DateTime ExitTime { get; set; }
 
         public ParkingSlot(int slotNumber)
         {
@@ -21,10 +23,12 @@ namespace ParkingManagementSystem
     class ParkingLot
     {
         private List<ParkingSlot> slots;
+        private List<string> parkingLog;
 
         public ParkingLot(int capacity)
         {
             slots = new List<ParkingSlot>();
+            parkingLog = new List<string>();
             for (int i = 1; i <= capacity; i++)
             {
                 slots.Add(new ParkingSlot(i));
@@ -40,7 +44,10 @@ namespace ParkingManagementSystem
                 {
                     slot.IsOccupied = true;
                     slot.VehicleNumber = vehicleNumber;
-                    Console.WriteLine($"Vehicle {vehicleNumber} parked at slot {slot.SlotNumber}");
+                    slot.EntryTime = DateTime.Now;
+                    string logEntry = $"Vehicle {vehicleNumber} parked at slot {slot.SlotNumber} at {slot.EntryTime}";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
                     return true;
                 }
             }
@@ -57,7 +64,10 @@ namespace ParkingManagementSystem
                 {
                     slot.IsOccupied = false;
                     slot.VehicleNumber = ""; // Assign empty string
-                    Console.WriteLine($"Vehicle {vehicleNumber} left the parking");
+                    slot.ExitTime = DateTime.Now;
+                    string logEntry = $"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {slot.ExitTime - slot.EntryTime}";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
                     return true;
                 }
             }
@@ -65,7 +75,6 @@ namespace ParkingManagementSystem
             return false;
         }
 
-        // Method to display parking status
         // Method to display parking status
         public void DisplayParkingStatus()
         {
@@ -82,6 +91,15 @@ namespace ParkingManagementSystem
             Console.WriteLine("+-------------+-----------+----------------+");
         }
 
+        // Method to display parking log
+        public void DisplayParkingLog()
+        {
+            Console.WriteLine("Parking Log:");
+            foreach (var logEntry in parkingLog)
+            {
+                Console.WriteLine(logEntry);
+            }
+        }
     }
 
     class Program
@@ -102,6 +120,21 @@ namespace ParkingManagementSystem
             parkingLot.LeaveParking("ABC123");
 
             parkingLot.DisplayParkingStatus();
+
+            // Adding a car to the parking lot
+            parkingLot.ParkVehicle("DEF789");
+
+            // Removing a car from the parking lot
+            parkingLot.LeaveParking("XYZ456");
+
+            parkingLot.DisplayParkingStatus();
+            parkingLot.ParkVehicle("12333");
+            parkingLot.DisplayParkingStatus();
+            parkingLot.LeaveParking("12333");
+            parkingLot.DisplayParkingStatus();
+
+            // Displaying parking log
+            parkingLot.DisplayParkingLog();
         }
     }
 }
