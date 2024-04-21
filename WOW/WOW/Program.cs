@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.IO.Image;
+using MySql.Data.MySqlClient;
 
 namespace ParkingManagementSystem
-{
+{   
     class PDFReceiptGenerator
     {
         public static void GenerateReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
@@ -77,19 +78,24 @@ namespace ParkingManagementSystem
         }
     }
 
-    class ParkingLot
+    class ParkingLot : IDisposable
     {
         private List<ParkingSlot> slots;
+        private MySqlConnection connection;
         private string filePath = @"C:\Users\Nielle\Downloads\Database_setup.csv";
         private double parkingRatePerHour = 30;
 
-        public ParkingLot(int capacity)
+        public ParkingLot(int capacity, string connectionString)
         {
             slots = new List<ParkingSlot>();
             for (int i = 1; i <= capacity; i++)
             {
                 slots.Add(new ParkingSlot());
             }
+
+            // Initialize the MySQL connection
+            connection = new MySqlConnection(connectionString);
+            connection.Open();
         }
 
         public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber)
@@ -118,16 +124,19 @@ namespace ParkingManagementSystem
             {
                 if (slot.IsOccupied && slot.VehicleNumber == vehicleNumber)
                 {
-                    slot.IsOccupied = false;
-                    slot.FullName = "";
-                    slot.VehicleType = "";
-                    slot.VehicleNumber = "";
                     slot.ExitTime = DateTime.Now;
                     TimeSpan duration = slot.ExitTime - slot.EntryTime;
                     double totalHours = duration.TotalHours;
                     double totalCost = totalHours < 1 ? parkingRatePerHour : totalHours * parkingRatePerHour;
 
-                    PDFReceiptGenerator.GenerateReceipt(slot.FullName, slot.VehicleType, vehicleNumber, slot.EntryTime, slot.ExitTime, duration, totalCost);
+                    // Insert data into the database
+                    InsertParkingReceipt(slot.FullName, slot.VehicleType, vehicleNumber, slot.EntryTime, slot.ExitTime, duration, totalCost);
+
+                    // Reset the slot
+                    slot.IsOccupied = false;
+                    slot.FullName = "";
+                    slot.VehicleType = "";
+                    slot.VehicleNumber = "";
 
                     Console.WriteLine($"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {duration}. Total Cost: {totalCost} PHP");
                     return true;
@@ -154,6 +163,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
         }
 
+
         public void DisplayParkingLog()
         {
             Console.WriteLine("Parking Log:");
@@ -174,13 +184,52 @@ namespace ParkingManagementSystem
                 Console.WriteLine($"Error reading log: {ex.Message}");
             }
         }
+        public void InsertParkingReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
+        {
+            string query = "INSERT INTO ParkingReceipts (fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost) VALUES (@fullName, @vehicleType, @vehicleNumber, @entryTime, @exitTime, @duration, @totalCost);";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                try
+                {
+                    command.Parameters.AddWithValue("@fullName", fullName);
+                    command.Parameters.AddWithValue("@vehicleType", vehicleType);
+                    command.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                    command.Parameters.AddWithValue("@entryTime", entryTime);
+                    command.Parameters.AddWithValue("@exitTime", exitTime);
+                    command.Parameters.AddWithValue("@duration", duration.ToString(@"hh\:mm\:ss"));
+                    command.Parameters.AddWithValue("@totalCost", totalCost);
+
+                    int result = command.ExecuteNonQuery();
+                    if (result < 1)
+                    {
+                        Console.WriteLine("No rows were inserted. Check your SQL statement and table schema.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error inserting data into the database: {ex.Message}");
+                }
+            }
+        }
+        public void Dispose()
+        {
+            if (connection != null)
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+        }
     }
+
+    
 
     class Program
     {
+        private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
         static void Main(string[] args)
         {
-            ParkingLot parkingLot = new ParkingLot(10);
+            using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
 
             do
             {
