@@ -100,54 +100,99 @@ namespace ParkingManagementSystem
 
         public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber)
         {
-            foreach (var slot in slots)
+            // Find an empty slot
+            var emptySlot = slots.FirstOrDefault(slot => !slot.IsOccupied);
+            if (emptySlot != null)
             {
-                if (!slot.IsOccupied)
+                emptySlot.IsOccupied = true;
+                emptySlot.FullName = fullName;
+                emptySlot.VehicleType = vehicleType;
+                emptySlot.VehicleNumber = vehicleNumber;
+                emptySlot.EntryTime = DateTime.Now;
+
+                // Insert data into the database
+                string query = "INSERT INTO ParkingEvents (slotNumber, fullName, vehicleType, vehicleNumber, entryTime, isPaid) " +
+                            "VALUES (@slotNumber, @fullName, @vehicleType, @vehicleNumber, @entryTime, FALSE);";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    slot.IsOccupied = true;
-                    slot.FullName = fullName;
-                    slot.VehicleType = vehicleType;
-                    slot.VehicleNumber = vehicleNumber;
-                    slot.EntryTime = DateTime.Now;
+                    command.Parameters.AddWithValue("@slotNumber", slots.IndexOf(emptySlot) + 1);
+                    command.Parameters.AddWithValue("@fullName", fullName);
+                    command.Parameters.AddWithValue("@vehicleType", vehicleType);
+                    command.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                    command.Parameters.AddWithValue("@entryTime", emptySlot.EntryTime);
 
-                    // Insert data into the database
-                    InsertParkingReceipt(slot.FullName, slot.VehicleType, slot.VehicleNumber, slot.EntryTime, null, TimeSpan.Zero, 0);
-
-                    Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slots.IndexOf(slot) + 1} at {slot.EntryTime}.");
-                    return true;
+                    command.ExecuteNonQuery();
                 }
+
+                Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slots.IndexOf(emptySlot) + 1}.");
+                return true;
             }
-            Console.WriteLine("Parking lot is full");
-            return false;
+            else
+            {
+                Console.WriteLine("Parking lot is full.");
+                return false;
+            }
         }
 
 
         public bool LeaveParking(string vehicleNumber)
         {
-            foreach (var slot in slots)
+            // Find the parking slot with the given vehicle number
+            var occupiedSlot = slots.FirstOrDefault(slot => slot.IsOccupied && slot.VehicleNumber == vehicleNumber);
+            if (occupiedSlot != null)
             {
-                if (slot.IsOccupied && slot.VehicleNumber == vehicleNumber)
+                // Calculate the duration and total cost
+                occupiedSlot.ExitTime = DateTime.Now;
+                TimeSpan duration = occupiedSlot.ExitTime - occupiedSlot.EntryTime;
+                double totalCost = CalculateTotalCost(duration);
+
+                // Update the ParkingEvents table with the exit time, duration, and total cost
+                string query = "UPDATE ParkingEvents SET exitTime = @exitTime, duration = @duration, totalCost = @totalCost, isPaid = @isPaid " +
+                            "WHERE vehicleNumber = @vehicleNumber AND exitTime IS NULL;";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    slot.ExitTime = DateTime.Now;
-                    TimeSpan duration = slot.ExitTime - slot.EntryTime;
-                    double totalHours = duration.TotalHours;
-                    double totalCost = totalHours < 1 ? parkingRatePerHour : totalHours * parkingRatePerHour;
+                    command.Parameters.AddWithValue("@exitTime", occupiedSlot.ExitTime);
+                    command.Parameters.AddWithValue("@duration", duration);
+                    command.Parameters.AddWithValue("@totalCost", totalCost);
+                    command.Parameters.AddWithValue("@isPaid", false); // Set this to true if the payment is confirmed
+                    command.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
 
-                    // Insert data into the database
-                    InsertParkingReceipt(slot.FullName, slot.VehicleType, vehicleNumber, slot.EntryTime, slot.ExitTime, duration, totalCost);
+                    int result = command.ExecuteNonQuery();
+                    if (result > 0)
+                    {
+                        // Reset the parking slot
+                        occupiedSlot.IsOccupied = false;
+                        occupiedSlot.FullName = null;
+                        occupiedSlot.VehicleType = null;
+                        occupiedSlot.VehicleNumber = null;
+                        occupiedSlot.EntryTime = DateTime.MinValue;
+                        occupiedSlot.ExitTime = DateTime.MinValue;
 
-                    // Reset the slot
-                    slot.IsOccupied = false;
-                    slot.FullName = "";
-                    slot.VehicleType = "";
-                    slot.VehicleNumber = "";
-
-                    Console.WriteLine($"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {duration}. Total Cost: {totalCost} PHP");
-                    return true;
+                        Console.WriteLine($"Vehicle {vehicleNumber} has left the parking lot. Duration: {duration}, Total Cost: {totalCost:C}.");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: No record was updated. Please check the vehicle number and try again.");
+                        return false;
+                    }
                 }
             }
-            Console.WriteLine($"Vehicle {vehicleNumber} not found in the parking lot");
-            return false;
+            else
+            {
+                Console.WriteLine($"Vehicle {vehicleNumber} not found in the parking lot.");
+                Console.WriteLine($"DEBUG: Vehicle number entered: {vehicleNumber}");
+                return false;
+            }
+        }
+
+        private double CalculateTotalCost(TimeSpan duration)
+        {
+            // Assuming the parking rate per hour is defined
+            double totalHours = duration.TotalHours;
+            return totalHours * parkingRatePerHour; // Replace 'parkingRatePerHour' with your actual rate
         }
 
         public void DisplayParkingStatus()
@@ -156,38 +201,63 @@ namespace ParkingManagementSystem
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
             Console.WriteLine("| Slot Number |  Status   | Vehicle Number |  Vehicle Type  |     Driver's Name    |");
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
-            foreach (var slot in slots)
+
+            string query = "SELECT slotNumber, fullName, vehicleType, vehicleNumber, entryTime FROM ParkingEvents WHERE exitTime IS NULL;";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
             {
-                string status = slot.IsOccupied ? "Occupied" : "Empty";
-                string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
-                string vehicleType = slot.IsOccupied ? slot.VehicleType : "-";
-                string fullName = slot.IsOccupied ? slot.FullName : "-";
-                Console.WriteLine($"| {slots.IndexOf(slot) + 1,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int slotNumber = reader.GetInt32("slotNumber");
+                        string fullName = reader.GetString("fullName");
+                        string vehicleType = reader.GetString("vehicleType");
+                        string vehicleNumber = reader.GetString("vehicleNumber");
+                        DateTime entryTime = reader.GetDateTime("entryTime");
+
+                        Console.WriteLine($"| {slotNumber,-11} | {"Occupied",-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
+                    }
+                }
             }
+
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
         }
-
 
         public void DisplayParkingLog()
         {
             Console.WriteLine("Parking Log:");
-            // Display log from CSV
-            try
+            Console.WriteLine("+----+-------------+----------------+-----------------+----------------+-----------------+----------+-----------+--------+");
+            Console.WriteLine("| ID | Slot Number | Vehicle Number | Vehicle Type    | Driver's Name  | Entry Time      | Exit Time| Duration  | Cost   |");
+            Console.WriteLine("+----+-------------+----------------+-----------------+----------------+-----------------+----------+-----------+--------+");
+
+            string query = "SELECT * FROM ParkingEvents;";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
             {
-                using (StreamReader reader = new StreamReader(filePath))
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    while (reader.Read())
                     {
-                        Console.WriteLine(line);
+                        int id = reader.GetInt32("id");
+                        int slotNumber = reader.GetInt32("slotNumber");
+                        string fullName = reader.GetString("fullName");
+                        string vehicleType = reader.GetString("vehicleType");
+                        string vehicleNumber = reader.GetString("vehicleNumber");
+                        DateTime entryTime = reader.GetDateTime("entryTime");
+                        DateTime? exitTime = reader.IsDBNull(reader.GetOrdinal("exitTime")) ? (DateTime?)null : reader.GetDateTime("exitTime");
+                        string duration = reader.IsDBNull(reader.GetOrdinal("duration")) ? "-" : reader.GetTimeSpan(reader.GetOrdinal("duration")).ToString();
+                        double totalCost = reader.IsDBNull(reader.GetOrdinal("totalCost")) ? 0 : reader.GetDouble("totalCost");
+                        bool isPaid = reader.GetBoolean("isPaid");
+
+                        Console.WriteLine($"| {id,-2} | {slotNumber,-11} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-14} | {entryTime,-15:yyyy-MM-dd HH:mm:ss} | {exitTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-",-9} | {duration,-9} | {totalCost,-6:0.00} |");
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading log: {ex.Message}");
-            }
+
+            Console.WriteLine("+----+-------------+----------------+-----------------+----------------+-----------------+----------+-----------+--------+");
         }
+
         public void InsertParkingReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime? exitTime, TimeSpan duration, double totalCost)
         {
             string query = "INSERT INTO ParkingReceipts (fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost) " +
