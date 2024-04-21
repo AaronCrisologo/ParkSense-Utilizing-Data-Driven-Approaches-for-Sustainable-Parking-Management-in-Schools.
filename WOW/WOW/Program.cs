@@ -110,6 +110,9 @@ namespace ParkingManagementSystem
                     slot.VehicleNumber = vehicleNumber;
                     slot.EntryTime = DateTime.Now;
 
+                    // Insert data into the database
+                    InsertParkingReceipt(slot.FullName, slot.VehicleType, slot.VehicleNumber, slot.EntryTime, null, TimeSpan.Zero, 0);
+
                     Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slots.IndexOf(slot) + 1} at {slot.EntryTime}.");
                     return true;
                 }
@@ -117,6 +120,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("Parking lot is full");
             return false;
         }
+
 
         public bool LeaveParking(string vehicleNumber)
         {
@@ -184,32 +188,22 @@ namespace ParkingManagementSystem
                 Console.WriteLine($"Error reading log: {ex.Message}");
             }
         }
-        public void InsertParkingReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
+        public void InsertParkingReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime? exitTime, TimeSpan duration, double totalCost)
         {
-            string query = "INSERT INTO ParkingReceipts (fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost) VALUES (@fullName, @vehicleType, @vehicleNumber, @entryTime, @exitTime, @duration, @totalCost);";
+            string query = "INSERT INTO ParkingReceipts (fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost) " +
+                        "VALUES (@fullName, @vehicleType, @vehicleNumber, @entryTime, @exitTime, @duration, @totalCost);";
 
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
-                try
-                {
-                    command.Parameters.AddWithValue("@fullName", fullName);
-                    command.Parameters.AddWithValue("@vehicleType", vehicleType);
-                    command.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
-                    command.Parameters.AddWithValue("@entryTime", entryTime);
-                    command.Parameters.AddWithValue("@exitTime", exitTime);
-                    command.Parameters.AddWithValue("@duration", duration.ToString(@"hh\:mm\:ss"));
-                    command.Parameters.AddWithValue("@totalCost", totalCost);
+                command.Parameters.AddWithValue("@fullName", fullName);
+                command.Parameters.AddWithValue("@vehicleType", vehicleType);
+                command.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                command.Parameters.AddWithValue("@entryTime", entryTime);
+                command.Parameters.AddWithValue("@exitTime", (object)exitTime ?? DBNull.Value);
+                command.Parameters.AddWithValue("@duration", duration.ToString(@"hh\:mm\:ss"));
+                command.Parameters.AddWithValue("@totalCost", totalCost);
 
-                    int result = command.ExecuteNonQuery();
-                    if (result < 1)
-                    {
-                        Console.WriteLine("No rows were inserted. Check your SQL statement and table schema.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error inserting data into the database: {ex.Message}");
-                }
+                command.ExecuteNonQuery();
             }
         }
         public void Dispose()
