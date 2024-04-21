@@ -1,5 +1,9 @@
 //To install MYSQL Connector for C#, open a new terminal in vscode and type "Install-Package MySql.Data -Version 8.0.23"
 
+//You need to also change connectionString in Program.cs
+//connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
+//adjust above to match your system configuration in MySQL
+
 CREATE DATABASE parkingslot1;
 
 CREATE TABLE ParkingEvents (
