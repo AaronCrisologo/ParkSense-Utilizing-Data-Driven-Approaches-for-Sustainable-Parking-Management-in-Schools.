@@ -1,0 +1,14 @@
+//To install MYSQL Connector for C#, open a new terminal in vscode and type "Install-Package MySql.Data -Version 8.0.23"
+
+CREATE DATABASE parkingslot1;
+
+CREATE TABLE ParkingReceipts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullName VARCHAR(255),
+    vehicleType VARCHAR(255),
+    vehicleNumber VARCHAR(255),
+    entryTime DATETIME,
+    exitTime DATETIME,
+    duration TIME,
+    totalCost DOUBLE
+);
