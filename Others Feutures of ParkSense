@@ -3,18 +3,29 @@ using System.Collections.Generic;
 
 namespace ParkingManagementSystem
 {
+    // Enum to represent different departments
+    public enum Department
+    {
+        CIT,
+        CEAFA,
+        CICS
+    }
+
     // Class representing a parking slot
     class ParkingSlot
     {
         public int SlotNumber { get; set; }
         public string VehicleNumber { get; set; } = ""; // Initialize to empty string
+        public Department Department { get; set; } // Department of the vehicle
         public bool IsOccupied { get; set; }
         public DateTime EntryTime { get; set; }
         public DateTime ExitTime { get; set; }
 
-        public ParkingSlot(int slotNumber)
+        // Constructor
+        public ParkingSlot(int slotNumber, Department department)
         {
             SlotNumber = slotNumber;
+            Department = department;
             IsOccupied = false;
         }
     }
@@ -24,39 +35,56 @@ namespace ParkingManagementSystem
     {
         private List<ParkingSlot> slots;
         private List<string> parkingLog;
-        private double parkingRatePerHour = 30; // Parking rate per hour
+        private double carParkingRatePerHour = 30; // Parking rate per hour for cars
+        private double motorcycleParkingRatePerHour = 15; // Parking rate per hour for motorcycles
+        private double parkingRatePerHour; // Current parking rate per hour
 
+        // Constructor
         public ParkingLot(int capacity)
         {
             slots = new List<ParkingSlot>();
             parkingLog = new List<string>();
             for (int i = 1; i <= capacity; i++)
             {
-                slots.Add(new ParkingSlot(i));
+                slots.Add(new ParkingSlot(i, Department.CIT)); // Initialize slots with default department CIT
             }
         }
 
         // Method to park a vehicle
-        public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleType, bool isPWD)
+        // Method to park a vehicle
+public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleType, bool isPWD, Department department)
+{
+    foreach (var slot in slots)
+    {
+        if (!slot.IsOccupied && slot.Department == department)
         {
-            foreach (var slot in slots)
+            slot.IsOccupied = true;
+            slot.VehicleNumber = vehicleNumber;
+            slot.EntryTime = DateTime.Now;
+            string pwdStatus = isPWD ? "Yes" : "No";
+            string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} (Department: {department}) at {slot.EntryTime}.";
+            parkingLog.Add(logEntry);
+            Console.WriteLine(logEntry);
+            Console.WriteLine("Your car has been parked");
+
+            // Determine parking rate based on vehicle type
+            if (vehicleType.ToLower() == "car" || vehicleType.ToLower() == "motor")
             {
-                if (!slot.IsOccupied)
-                {
-                    slot.IsOccupied = true;
-                    slot.VehicleNumber = vehicleNumber;
-                    slot.EntryTime = DateTime.Now;
-                    string pwdStatus = isPWD ? "Yes" : "No";
-                    string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
-                    parkingLog.Add(logEntry);
-                    Console.WriteLine(logEntry);
-                    Console.WriteLine("Your car has been parked");
-                    return true;
-                }
+                parkingRatePerHour = vehicleType.ToLower() == "car" ? carParkingRatePerHour : motorcycleParkingRatePerHour;
+                Console.WriteLine($"Parking fee: {parkingRatePerHour} PHP per hour");
+                return true;
             }
-            Console.WriteLine("Parking lot is full");
-            return false;
+            else
+            {
+                Console.WriteLine("Invalid vehicle type. Please enter 'car' or 'motor'.");
+                return false;
+            }
         }
+    }
+    Console.WriteLine($"No available slots for {department} department.");
+    return false;
+}
+
 
         // Method to leave the parking
         public bool LeaveParking(string vehicleNumber)
@@ -70,6 +98,9 @@ namespace ParkingManagementSystem
                     slot.ExitTime = DateTime.Now;
                     TimeSpan duration = slot.ExitTime - slot.EntryTime;
                     double totalHours = duration.TotalHours;
+
+                    // Determine parking rate based on vehicle type
+                    parkingRatePerHour = vehicleNumber.ToLower().Contains("car") ? carParkingRatePerHour : motorcycleParkingRatePerHour;
                     double totalCost = totalHours < 1 ? parkingRatePerHour : totalHours * parkingRatePerHour;
                     string logEntry = $"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {duration}. Total Cost: {totalCost} PHP";
                     parkingLog.Add(logEntry);
@@ -83,58 +114,32 @@ namespace ParkingManagementSystem
         }
 
         // Method to display parking status
-public void DisplayParkingStatus()
-{
-    Console.WriteLine("Parking Status:");
-    Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
-    Console.WriteLine("| Slot Number |  Status   | Vehicle Number | Vehicle Type   | PWD             |");
-    Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
-    foreach (var slot in slots)
-    {
-        string status = slot.IsOccupied ? "Occupied" : "Empty";
-        string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
-        string vehicleType = slot.IsOccupied ? "Car" : "-";
-        string pwdStatus = slot.IsOccupied ? "Yes" : ""; // Display blank if slot is empty
-        string parkingRate = slot.IsOccupied ? parkingRatePerHour.ToString() : "-"; // Display parking rate only if occupied
-
-        // Display vehicle type and PWD status if slot is occupied
-        if (slot.IsOccupied)
+        public void DisplayParkingStatus()
         {
-            // Get vehicle type and PWD status from the parking log
-            foreach (var logEntry in parkingLog)
+            Console.WriteLine("Parking Status:");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
+            Console.WriteLine("| Slot Number |  Status   | Vehicle Number | Vehicle Type   | Department      |");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
+            foreach (var slot in slots)
             {
-                if (logEntry.Contains(slot.VehicleNumber))
-                {
-                    int typeStartIndex = logEntry.IndexOf("Type:") + 5;
-                    int typeEndIndex = logEntry.IndexOf(",", typeStartIndex);
-                    vehicleType = logEntry.Substring(typeStartIndex, typeEndIndex - typeStartIndex).Trim();
-
-                    int pwdStartIndex = logEntry.IndexOf("PWD:") + 4;
-                    int pwdEndIndex = logEntry.IndexOf(")", pwdStartIndex);
-                    pwdStatus = logEntry.Substring(pwdStartIndex, pwdEndIndex - pwdStartIndex).Trim();
-                    break;
-                }
+                string status = slot.IsOccupied ? "Occupied" : "Empty";
+                string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
+                string vehicleType = slot.IsOccupied ? "Car" : "-";
+                string department = slot.IsOccupied ? slot.Department.ToString() : ""; // Display blank if slot is empty
+                string pwdStatus = slot.IsOccupied ? "Yes" : ""; // Display blank if slot is empty
+                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-14} | {department,-15} |");
             }
+            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
         }
-
-        Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-14} | {pwdStatus,-15} |");
-    }
-    Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
-}
-
 
         // Method to display parking log
         public void DisplayParkingLog()
         {
             Console.WriteLine("Parking Log:");
-            Console.WriteLine("+--------------------------+");
-            Console.WriteLine("|          Log Entry       |");
-            Console.WriteLine("+--------------------------+");
             foreach (var logEntry in parkingLog)
             {
-                Console.WriteLine($"| {logEntry,-24} |");
+                Console.WriteLine(logEntry);
             }
-            Console.WriteLine("+--------------------------+");
         }
     }
 
@@ -162,11 +167,18 @@ public void DisplayParkingStatus()
                         string driverName = Console.ReadLine();
                         Console.Write("Enter your car's license number: ");
                         string licenseNumber = Console.ReadLine();
-                        Console.Write("Enter vehicle type: ");
+                        Console.Write("Enter vehicle type (car/motor): ");
                         string vehicleType = Console.ReadLine();
                         Console.Write("Are you a PWD? (yes/no): ");
                         bool isPWD = Console.ReadLine().ToLower() == "yes";
-                        parkingLot.ParkVehicle(driverName, licenseNumber, vehicleType, isPWD);
+                        Console.WriteLine("Enter your department (CIT, CEAFA, CICS): ");
+                        Department department;
+                        while (!Enum.TryParse(Console.ReadLine().Trim().ToUpper(), out department))
+                        {
+                            Console.WriteLine("Invalid department. Please enter again.");
+                            Console.WriteLine("Enter your department (CIT, CEAFA, CICS): ");
+                        }
+                        parkingLot.ParkVehicle(driverName, licenseNumber, vehicleType, isPWD, department);
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 2:
