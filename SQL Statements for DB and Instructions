@@ -7,22 +7,30 @@
 CREATE DATABASE parkingslot1;
 
 CREATE TABLE ParkingEvents (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    slotNumber INT,
+    parkingSlot INT AUTO_INCREMENT PRIMARY KEY,
+    isOccupied BOOLEAN,
     fullName VARCHAR(255),
     vehicleType VARCHAR(255),
     vehicleNumber VARCHAR(255) UNIQUE,
-    entryTime DATETIME,
-    exitTime DATETIME,
-    duration TIME,
-    totalCost DECIMAL(10, 2),
-    isPaid BOOLEAN
+    entryTime DATETIME
 );
 
+INSERT INTO ParkingEvents (isOccupied, fullName, vehicleType, vehicleNumber, entryTime) VALUES
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL),
+(NULL, NULL, NULL, NULL, NULL);
 
-//May be replaced by parkingevent unless it becomes a table specifically for logging
+
 CREATE TABLE ParkingReceipts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    receiptId INT AUTO_INCREMENT PRIMARY KEY,
+    parkingSlot INT,
     fullName VARCHAR(255),
     vehicleType VARCHAR(255),
     vehicleNumber VARCHAR(255),
