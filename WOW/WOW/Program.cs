@@ -8,7 +8,7 @@ using iText.IO.Image;
 using MySql.Data.MySqlClient;
 
 namespace ParkingManagementSystem
-{   
+{
     class PDFReceiptGenerator
     {
         public static void GenerateReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
@@ -310,17 +310,17 @@ namespace ParkingManagementSystem
         {
             // Define the SQL query to select all records from the 'ParkingReceipts' table
             string query = "SELECT * FROM ParkingReceipts;";
-            
+
             // Execute the query and retrieve the data
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     // Print the header row
-                    Console.WriteLine("{0,-12} | {1,-10} | {2,-12} | {3,-14} | {4,-19} | {5,-19} | {6,-9} | {7,-10}", 
+                    Console.WriteLine("{0,-12} | {1,-10} | {2,-12} | {3,-14} | {4,-19} | {5,-19} | {6,-9} | {7,-10}",
                                     "ParkingSlot", "FullName", "VehicleType", "VehicleNumber", "EntryTime", "ExitTime", "Duration", "TotalCost");
                     Console.WriteLine(new string('-', 130));
-                    
+
                     // Iterate through the result set
                     while (reader.Read())
                     {
@@ -333,9 +333,9 @@ namespace ParkingManagementSystem
                         DateTime exitTime = reader.GetDateTime("exitTime");
                         TimeSpan duration = reader.GetTimeSpan("duration");
                         double totalCost = reader.GetDouble("totalCost");
-                        
+
                         // Print the row data
-                        Console.WriteLine("{0,-12} | {1,-10} | {2,-12} | {3,-14} | {4:yyyy-MM-dd HH:mm:ss} | {5:yyyy-MM-dd HH:mm:ss} | {6,-9} | {7,-10:N2}", 
+                        Console.WriteLine("{0,-12} | {1,-10} | {2,-12} | {3,-14} | {4:yyyy-MM-dd HH:mm:ss} | {5:yyyy-MM-dd HH:mm:ss} | {6,-9} | {7,-10:N2}",
                                         parkingSlot, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost);
                         Console.WriteLine(new string('-', 130));
                     }
@@ -372,74 +372,85 @@ namespace ParkingManagementSystem
 
             //Adds +30 to fee for every hour consumed
             double totalHours = duration.TotalHours;
-            while(totalHours > 0){
+            while (totalHours > 0)
+            {
                 fee += 30;
                 totalHours--;
             }
             return fee;
         }
 
-    class Program
-    {
-        private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
-        static void Main(string[] args)
+        public void Dispose()
         {
-            using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
-
-            do
+            if (connection != null)
             {
-                Console.WriteLine("-----Welcome to Parksense-----");
-                Console.WriteLine("Would you like to park your car?,   press 1");
-                Console.WriteLine("Do you want to take your car?,      press 2");
-                Console.WriteLine("Display the parking area,           press 3");
-                Console.WriteLine("Display the logs,                   press 4");
-                Console.WriteLine("Exit the program,                   press 5\n");
-                Console.Write("What do you want to do: ");
+                connection.Close();
+                connection.Dispose();
+            }
+        }
 
-                if (!int.TryParse(Console.ReadLine(), out int dec))
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
-                    continue;
-                }
+        class Program
+        {
+            private static string connectionString = "server=localhost;database=parkingslot1;uid=root;pwd=4122133pogi;";
+            static void Main(string[] args)
+            {
+                using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
 
-                Console.WriteLine();
+                    do
+                    {
+                        Console.WriteLine("-----Welcome to Parksense-----");
+                        Console.WriteLine("Would you like to park your car?,   press 1");
+                        Console.WriteLine("Do you want to take your car?,      press 2");
+                        Console.WriteLine("Display the parking area,           press 3");
+                        Console.WriteLine("Display the logs,                   press 4");
+                        Console.WriteLine("Exit the program,                   press 5\n");
+                        Console.Write("What do you want to do: ");
 
-                switch (dec)
-                {
-                    case 1:
-                        Console.Write("Enter your full name: ");
-                        string fullName = Console.ReadLine();
-                        Console.Write("Enter your vehicle type: ");
-                        string vehicleType = Console.ReadLine();
-                        Console.Write("Enter your car's license number: ");
-                        string num = Console.ReadLine();
-                        parkingLot.ParkVehicle(fullName, vehicleType, num);
-                        Console.WriteLine("Your car has been parked");
-                        Console.WriteLine("++++++++++++++++++++++++++++\n");
-                        break;
-                    case 2:
-                        Console.Write("Input your car's license number: ");
-                        string car = Console.ReadLine();
-                        parkingLot.LeaveParking(car);
-                        Console.WriteLine("++++++++++++++++++++++++++++\n");
-                        break;
-                    case 3:
-                        parkingLot.DisplayParkingStatus();
-                        break;
-                    case 4:
-                        parkingLot.DisplayParkingLog();
-                        Console.WriteLine("++++++++++++++++++++++++++++\n");
-                        break;
-                    case 5:
-                        Console.WriteLine("Exiting the program...");
-                        return;
-                    default:
-                        Console.WriteLine("Invalid input, please try again");
-                        Console.WriteLine("++++++++++++++++++++++++++++\n");
-                        break;
-                }
+                        if (!int.TryParse(Console.ReadLine(), out int dec))
+                        {
+                            Console.WriteLine("Invalid input. Please enter a valid number.");
+                            continue;
+                        }
 
-            } while (true);
+                        Console.WriteLine();
+
+                        switch (dec)
+                        {
+                            case 1:
+                                Console.Write("Enter your full name: ");
+                                string fullName = Console.ReadLine();
+                                Console.Write("Enter your vehicle type: ");
+                                string vehicleType = Console.ReadLine();
+                                Console.Write("Enter your car's license number: ");
+                                string num = Console.ReadLine();
+                                parkingLot.ParkVehicle(fullName, vehicleType, num);
+                                Console.WriteLine("Your car has been parked");
+                                Console.WriteLine("++++++++++++++++++++++++++++\n");
+                                break;
+                            case 2:
+                                Console.Write("Input your car's license number: ");
+                                string car = Console.ReadLine();
+                                parkingLot.LeaveParking(car);
+                                Console.WriteLine("++++++++++++++++++++++++++++\n");
+                                break;
+                            case 3:
+                                parkingLot.DisplayParkingStatus();
+                                break;
+                            case 4:
+                                parkingLot.DisplayParkingLog();
+                                Console.WriteLine("++++++++++++++++++++++++++++\n");
+                                break;
+                            case 5:
+                                Console.WriteLine("Exiting the program...");
+                                return;
+                            default:
+                                Console.WriteLine("Invalid input, please try again");
+                                Console.WriteLine("++++++++++++++++++++++++++++\n");
+                                break;
+                        }
+
+                    } while (true);
+            }
         }
     }
 }
