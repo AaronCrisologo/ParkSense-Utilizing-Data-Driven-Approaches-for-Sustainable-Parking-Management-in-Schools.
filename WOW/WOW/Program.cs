@@ -391,7 +391,7 @@ namespace ParkingManagementSystem
 
         class Program
         {
-            private static string connectionString = "server=localhost;database=parkingslot1;uid=root;pwd=4122133pogi;";
+            private static string connectionString = "server=localhost;database=parkingslot1;uid=root;pwd=password;";
             static void Main(string[] args)
             {
                 using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
