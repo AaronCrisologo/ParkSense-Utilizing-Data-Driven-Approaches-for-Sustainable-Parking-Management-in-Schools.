@@ -367,19 +367,17 @@ namespace ParkingManagementSystem
 
         private double CalculateTotalCost(TimeSpan duration)
         {
-            // Assuming the parking rate per hour is defined
+            //set parking fee initially as 0
+            int fee = 0;
+
+            //Adds +30 to fee for every hour consumed
             double totalHours = duration.TotalHours;
-            return totalHours * parkingRatePerHour; // Replace 'parkingRatePerHour' with your actual rate
-        }
-        public void Dispose()
-        {
-            if (connection != null)
-            {
-                connection.Close();
-                connection.Dispose();
+            while(totalHours > 0){
+                fee += 30;
+                totalHours--;
             }
+            return fee;
         }
-    }
 
     class Program
     {
