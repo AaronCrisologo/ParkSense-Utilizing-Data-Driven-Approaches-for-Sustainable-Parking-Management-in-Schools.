@@ -1,0 +1,205 @@
+using System;
+using System.Collections.Generic;
+
+namespace ParkingManagementSystem
+{
+    // Class representing a parking slot
+    class ParkingSlot
+    {
+        public int SlotNumber { get; set; }
+        public string VehicleNumber { get; set; } = ""; // Initialize to empty string
+        public bool IsOccupied { get; set; }
+        public bool IsPWDSlot { get; set; } // Indicates whether the slot is reserved for PWD
+        public bool IsOccupiedByPWD { get; set; } // Indicates whether the slot is currently occupied by a PWD
+        public DateTime EntryTime { get; set; }
+        public DateTime ExitTime { get; set; }
+
+        // Constructor
+        public ParkingSlot(int slotNumber, bool isPWDSlot = false)
+        {
+            SlotNumber = slotNumber;
+            IsOccupied = false;
+            IsPWDSlot = isPWDSlot;
+            IsOccupiedByPWD = false;
+        }
+    }
+
+    // Class representing the Parking Lot
+    class ParkingLot
+    {
+        private List<ParkingSlot> slots;
+        private List<string> parkingLog;
+        private double carParkingRatePerHour = 30; // Parking rate per hour for cars
+        private double motorcycleParkingRatePerHour = 15; // Parking rate per hour for motorcycles
+        private double parkingRatePerHour; // Current parking rate per hour
+        private int totalPWDSlots = 2; // Total number of reserved slots for PWD
+        private int occupiedPWDSlots = 0; // Currently occupied PWD slots
+
+        // Constructor
+        public ParkingLot(int capacity)
+        {
+            slots = new List<ParkingSlot>();
+            parkingLog = new List<string>();
+            for (int i = 1; i <= capacity; i++)
+            {
+                bool isPWDSlot = i <= totalPWDSlots; // Mark the first two slots as reserved for PWD
+                slots.Add(new ParkingSlot(i, isPWDSlot)); // Initialize slots
+            }
+        }
+
+        // Method to park a vehicle
+        public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleType, bool isPWD)
+        {
+            foreach (var slot in slots)
+            {
+                // If the slot is reserved for PWD and is not occupied by a non-PWD vehicle
+                if (isPWD && slot.IsPWDSlot && !slot.IsOccupied && !slot.IsOccupiedByPWD)
+                {
+                    slot.IsOccupied = true;
+                    slot.VehicleNumber = vehicleNumber;
+                    slot.EntryTime = DateTime.Now;
+                    slot.IsOccupiedByPWD = true;
+                    occupiedPWDSlots++; // Increment the count of occupied PWD slots
+                    string pwdStatus = isPWD ? "Yes" : "No";
+                    string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
+                    Console.WriteLine("Your car has been parked in a reserved PWD slot.");
+                    return true;
+                }
+                // If the slot is not reserved for PWD or the vehicle is not a PWD vehicle
+                else if (!slot.IsOccupied && (!slot.IsPWDSlot || !isPWD))
+                {
+                    slot.IsOccupied = true;
+                    slot.VehicleNumber = vehicleNumber;
+                    slot.EntryTime = DateTime.Now;
+                    string pwdStatus = isPWD ? "Yes" : "No";
+                    string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
+                    Console.WriteLine("Your car has been parked.");
+                    return true;
+                }
+            }
+            Console.WriteLine("No available slots.");
+            return false;
+        }
+
+        // Method to leave the parking
+        public bool LeaveParking(string vehicleNumber)
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.IsOccupied && slot.VehicleNumber == vehicleNumber)
+                {
+                    slot.IsOccupied = false;
+                    slot.VehicleNumber = ""; // Assign empty string
+                    slot.ExitTime = DateTime.Now;
+
+                    // If the slot was occupied by a PWD vehicle, update the count of occupied PWD slots
+                    if (slot.IsOccupiedByPWD)
+                    {
+                        slot.IsOccupiedByPWD = false;
+                        occupiedPWDSlots--;
+                    }
+
+                    TimeSpan duration = slot.ExitTime - slot.EntryTime;
+                    double totalHours = duration.TotalHours;
+
+                    // Determine parking rate based on vehicle type
+                    parkingRatePerHour = vehicleNumber.ToLower().Contains("car") ? carParkingRatePerHour : motorcycleParkingRatePerHour;
+                    double totalCost = totalHours < 1 ? parkingRatePerHour : totalHours * parkingRatePerHour;
+                    string logEntry = $"Vehicle {vehicleNumber} left the parking at {slot.ExitTime}. Duration: {duration}. Total Cost: {totalCost} PHP";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
+                    Console.WriteLine("Drive safely");
+                    return true;
+                }
+            }
+            Console.WriteLine($"Vehicle {vehicleNumber} not found in the parking lot");
+            return false;
+        }
+
+        // Method to display parking status
+        public void DisplayParkingStatus()
+        {
+            Console.WriteLine("Parking Status:");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
+            Console.WriteLine("| Slot Number |  Status   | Vehicle Number | Vehicle Type   |");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
+            foreach (var slot in slots)
+            {
+                string status = slot.IsOccupied ? "Occupied" : "Empty";
+                string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
+                string vehicleType = slot.IsOccupied ? "Car" : "-";
+                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-14} |");
+            }
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
+        }
+
+        // Method to display parking log
+        public void DisplayParkingLog()
+        {
+            Console.WriteLine("Parking Log:");
+            foreach (var logEntry in parkingLog)
+            {
+                Console.WriteLine(logEntry);
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Create a parking lot with 10 slots
+            ParkingLot parkingLot = new ParkingLot(10);
+
+            do
+            {
+                Console.WriteLine("-----Welcome to Parksense for CET-----");
+                Console.WriteLine("Would you like to park your car?,   press 1");
+                Console.WriteLine("Do you want to take your car?,      press 2");
+                Console.WriteLine("Display the parking area,           press 3");
+                Console.WriteLine("Display the logs,                   press 4\n");
+                Console.Write("What do you want to do: ");
+                int dec = int.Parse(Console.ReadLine());
+                Console.WriteLine(" ");
+                switch (dec)
+                {
+                    case 1:
+                        Console.Write("Enter driver's name: ");
+                        string driverName = Console.ReadLine();
+                        Console.Write("Enter your car's license number: ");
+                        string licenseNumber = Console.ReadLine();
+                        Console.Write("Enter vehicle type (car/motor): ");
+                        string vehicleType = Console.ReadLine();
+                        Console.Write("Are you a PWD? (yes/no): ");
+                        bool isPWD = Console.ReadLine().ToLower() == "yes";
+                        parkingLot.ParkVehicle(driverName, licenseNumber, vehicleType, isPWD);
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    case 2:
+                        Console.Write("Input your car's license number: ");
+                        string car = Console.ReadLine();
+                        parkingLot.LeaveParking(car);
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    case 3:
+                        parkingLot.DisplayParkingStatus();
+                        break;
+                    case 4:
+                        parkingLot.DisplayParkingLog();
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                    default:
+                        Console.WriteLine("Invalid input, please try again");
+                        Console.WriteLine("++++++++++++++++++++++++++++\n");
+                        break;
+                }
+
+            } while (true);
+
+        }
+    }
+}
