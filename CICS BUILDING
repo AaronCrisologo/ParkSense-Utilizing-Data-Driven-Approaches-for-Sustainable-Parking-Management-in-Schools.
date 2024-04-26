@@ -3,30 +3,24 @@ using System.Collections.Generic;
 
 namespace ParkingManagementSystem
 {
-    // Enum to represent different departments
-    public enum Department
-    {
-        CIT,
-        CEAFA,
-        CICS
-    }
-
     // Class representing a parking slot
     class ParkingSlot
     {
         public int SlotNumber { get; set; }
         public string VehicleNumber { get; set; } = ""; // Initialize to empty string
-        public Department Department { get; set; } // Department of the vehicle
         public bool IsOccupied { get; set; }
+        public bool IsPWDSlot { get; set; } // Indicates whether the slot is reserved for PWD
+        public bool IsOccupiedByPWD { get; set; } // Indicates whether the slot is currently occupied by a PWD
         public DateTime EntryTime { get; set; }
         public DateTime ExitTime { get; set; }
 
         // Constructor
-        public ParkingSlot(int slotNumber, Department department)
+        public ParkingSlot(int slotNumber, bool isPWDSlot = false)
         {
             SlotNumber = slotNumber;
-            Department = department;
             IsOccupied = false;
+            IsPWDSlot = isPWDSlot;
+            IsOccupiedByPWD = false;
         }
     }
 
@@ -38,6 +32,8 @@ namespace ParkingManagementSystem
         private double carParkingRatePerHour = 30; // Parking rate per hour for cars
         private double motorcycleParkingRatePerHour = 15; // Parking rate per hour for motorcycles
         private double parkingRatePerHour; // Current parking rate per hour
+        private int totalPWDSlots = 2; // Total number of reserved slots for PWD
+        private int occupiedPWDSlots = 0; // Currently occupied PWD slots
 
         // Constructor
         public ParkingLot(int capacity)
@@ -46,45 +42,48 @@ namespace ParkingManagementSystem
             parkingLog = new List<string>();
             for (int i = 1; i <= capacity; i++)
             {
-                slots.Add(new ParkingSlot(i, Department.CIT)); // Initialize slots with default department CIT
+                bool isPWDSlot = i <= totalPWDSlots; // Mark the first two slots as reserved for PWD
+                slots.Add(new ParkingSlot(i, isPWDSlot)); // Initialize slots
             }
         }
 
         // Method to park a vehicle
-        // Method to park a vehicle
-public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleType, bool isPWD, Department department)
-{
-    foreach (var slot in slots)
-    {
-        if (!slot.IsOccupied && slot.Department == department)
+        public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleType, bool isPWD)
         {
-            slot.IsOccupied = true;
-            slot.VehicleNumber = vehicleNumber;
-            slot.EntryTime = DateTime.Now;
-            string pwdStatus = isPWD ? "Yes" : "No";
-            string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} (Department: {department}) at {slot.EntryTime}.";
-            parkingLog.Add(logEntry);
-            Console.WriteLine(logEntry);
-            Console.WriteLine("Your car has been parked");
-
-            // Determine parking rate based on vehicle type
-            if (vehicleType.ToLower() == "car" || vehicleType.ToLower() == "motor")
+            foreach (var slot in slots)
             {
-                parkingRatePerHour = vehicleType.ToLower() == "car" ? carParkingRatePerHour : motorcycleParkingRatePerHour;
-                Console.WriteLine($"Parking fee: {parkingRatePerHour} PHP per hour");
-                return true;
+                // If the slot is reserved for PWD and is not occupied by a non-PWD vehicle
+                if (isPWD && slot.IsPWDSlot && !slot.IsOccupied && !slot.IsOccupiedByPWD)
+                {
+                    slot.IsOccupied = true;
+                    slot.VehicleNumber = vehicleNumber;
+                    slot.EntryTime = DateTime.Now;
+                    slot.IsOccupiedByPWD = true;
+                    occupiedPWDSlots++; // Increment the count of occupied PWD slots
+                    string pwdStatus = isPWD ? "Yes" : "No";
+                    string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
+                    Console.WriteLine("Your car has been parked in a reserved PWD slot.");
+                    return true;
+                }
+                // If the slot is not reserved for PWD or the vehicle is not a PWD vehicle
+                else if (!slot.IsOccupied && (!slot.IsPWDSlot || !isPWD))
+                {
+                    slot.IsOccupied = true;
+                    slot.VehicleNumber = vehicleNumber;
+                    slot.EntryTime = DateTime.Now;
+                    string pwdStatus = isPWD ? "Yes" : "No";
+                    string logEntry = $"Vehicle {vehicleNumber} (Driver: {driverName}, License: {vehicleNumber}, Type: {vehicleType}, PWD: {pwdStatus}) parked at slot {slot.SlotNumber} at {slot.EntryTime}.";
+                    parkingLog.Add(logEntry);
+                    Console.WriteLine(logEntry);
+                    Console.WriteLine("Your car has been parked.");
+                    return true;
+                }
             }
-            else
-            {
-                Console.WriteLine("Invalid vehicle type. Please enter 'car' or 'motor'.");
-                return false;
-            }
+            Console.WriteLine("No available slots.");
+            return false;
         }
-    }
-    Console.WriteLine($"No available slots for {department} department.");
-    return false;
-}
-
 
         // Method to leave the parking
         public bool LeaveParking(string vehicleNumber)
@@ -96,6 +95,14 @@ public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleT
                     slot.IsOccupied = false;
                     slot.VehicleNumber = ""; // Assign empty string
                     slot.ExitTime = DateTime.Now;
+
+                    // If the slot was occupied by a PWD vehicle, update the count of occupied PWD slots
+                    if (slot.IsOccupiedByPWD)
+                    {
+                        slot.IsOccupiedByPWD = false;
+                        occupiedPWDSlots--;
+                    }
+
                     TimeSpan duration = slot.ExitTime - slot.EntryTime;
                     double totalHours = duration.TotalHours;
 
@@ -117,19 +124,17 @@ public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleT
         public void DisplayParkingStatus()
         {
             Console.WriteLine("Parking Status:");
-            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
-            Console.WriteLine("| Slot Number |  Status   | Vehicle Number | Vehicle Type   | Department      |");
-            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
+            Console.WriteLine("| Slot Number |  Status   | Vehicle Number | Vehicle Type   |");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
             foreach (var slot in slots)
             {
                 string status = slot.IsOccupied ? "Occupied" : "Empty";
                 string vehicleNumber = slot.IsOccupied ? slot.VehicleNumber : "-";
                 string vehicleType = slot.IsOccupied ? "Car" : "-";
-                string department = slot.IsOccupied ? slot.Department.ToString() : ""; // Display blank if slot is empty
-                string pwdStatus = slot.IsOccupied ? "Yes" : ""; // Display blank if slot is empty
-                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-14} | {department,-15} |");
+                Console.WriteLine($"| {slot.SlotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-14} |");
             }
-            Console.WriteLine("+-------------+-----------+----------------+----------------+-----------------+");
+            Console.WriteLine("+-------------+-----------+----------------+----------------+");
         }
 
         // Method to display parking log
@@ -152,7 +157,7 @@ public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleT
 
             do
             {
-                Console.WriteLine("-----Welcome to Parksense-----");
+                Console.WriteLine("-----Welcome to Parksense for CICS-----");
                 Console.WriteLine("Would you like to park your car?,   press 1");
                 Console.WriteLine("Do you want to take your car?,      press 2");
                 Console.WriteLine("Display the parking area,           press 3");
@@ -171,14 +176,7 @@ public bool ParkVehicle(string driverName, string vehicleNumber, string vehicleT
                         string vehicleType = Console.ReadLine();
                         Console.Write("Are you a PWD? (yes/no): ");
                         bool isPWD = Console.ReadLine().ToLower() == "yes";
-                        Console.WriteLine("Enter your department (CIT, CEAFA, CICS): ");
-                        Department department;
-                        while (!Enum.TryParse(Console.ReadLine().Trim().ToUpper(), out department))
-                        {
-                            Console.WriteLine("Invalid department. Please enter again.");
-                            Console.WriteLine("Enter your department (CIT, CEAFA, CICS): ");
-                        }
-                        parkingLot.ParkVehicle(driverName, licenseNumber, vehicleType, isPWD, department);
+                        parkingLot.ParkVehicle(driverName, licenseNumber, vehicleType, isPWD);
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 2:
