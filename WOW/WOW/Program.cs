@@ -35,7 +35,8 @@ namespace ParkingManagementSystem
                         string vehicleType = Console.ReadLine();
                         Console.Write("Enter your car's license number: ");
                         string num = Console.ReadLine();
-                        parkingLot.ParkVehicle(fullName, vehicleType, num);
+                        string pwd = null;
+                        parkingLot.ParkVehicle(fullName, vehicleType, num, pwd);
                         Console.WriteLine("Your car has been parked");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;

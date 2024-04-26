@@ -25,9 +25,21 @@ namespace ParkingManagementSystem
             databaseOperations = new DatabaseOperations(connectionString);
         }
 
-        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber)
+        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string isPWD)
         {
             int slotNumber = 1; // Start checking from the first slot
+
+            if(isPWD != "no")
+            {
+                Console.Write("PWD? (yes or no): ");
+                isPWD = Console.ReadLine().ToLower();
+                if (isPWD == "yes")
+                {
+                    slotNumber = 9;
+                }
+
+            }
+
             bool slotFound = false;
             ParkingSlot emptySlot = null;
 
@@ -90,6 +102,11 @@ namespace ParkingManagementSystem
             }
             else
             {
+                if (isPWD == "yes")
+                {
+                    isPWD = "no";
+                    ParkVehicle(fullName, vehicleType, vehicleNumber, isPWD);
+                }
                 Console.WriteLine("Parking lot is full or no available slots.");
                 return false;
             }
