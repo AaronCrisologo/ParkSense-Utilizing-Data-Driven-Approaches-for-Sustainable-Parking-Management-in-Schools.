@@ -1,6 +1,6 @@
 namespace ParkingManagementSystem
 {
-    class ParkingSlot
+    public class ParkingSlot
     {
         public string FullName { get; set; }
         public string VehicleType { get; set; }

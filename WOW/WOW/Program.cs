@@ -1,8 +1,8 @@
 namespace ParkingManagementSystem
 {
-    class Program
+    public class Program
     {
-        private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
+        private static string connectionString = "server=localhost;database=parkingslot1;uid=root;pwd=4122133pogi;";
 
         static void Main(string[] args)
         {
@@ -36,14 +36,16 @@ namespace ParkingManagementSystem
                         Console.Write("Enter your car's license number: ");
                         string num = Console.ReadLine();
                         string pwd = null;
-                        parkingLot.ParkVehicle(fullName, vehicleType, num, pwd);
+                        Console.Write("which department(cics, coe, ceafa, cit): ");
+                        string dep = Console.ReadLine().ToLower();
+                        parkingLot.ParkVehicle(fullName, vehicleType, num, true, dep);
                         Console.WriteLine("Your car has been parked");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 2:
                         Console.Write("Input your car's license number: ");
                         string car = Console.ReadLine();
-                        parkingLot.LeaveParking(car);
+                        parkingLot.LeaveParking(car, "ceafa");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 3:

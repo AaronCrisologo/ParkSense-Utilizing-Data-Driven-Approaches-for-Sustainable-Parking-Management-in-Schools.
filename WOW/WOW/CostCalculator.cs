@@ -2,7 +2,7 @@ using System;
 
 namespace ParkingManagementSystem
 {
-    class CostCalculator
+    public class CostCalculator
     {
         public double CalculateTotalCost(TimeSpan duration)
         {

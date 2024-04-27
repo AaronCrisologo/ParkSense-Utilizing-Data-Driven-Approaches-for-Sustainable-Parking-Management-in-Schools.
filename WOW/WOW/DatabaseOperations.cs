@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ParkingManagementSystem
 {
-    class DatabaseOperations : IDisposable
+   public class DatabaseOperations : IDisposable
     {
         private MySqlConnection connection;
 
@@ -20,7 +20,7 @@ namespace ParkingManagementSystem
             slots.Clear();
 
             // Retrieve the current state from the database and update the slots list
-            string query = "SELECT * FROM ParkingEvents WHERE isOccupied = TRUE;";
+            string query = "SELECT * FROM cics WHERE isOccupied = TRUE;";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 using (MySqlDataReader reader = command.ExecuteReader())

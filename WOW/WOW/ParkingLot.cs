@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using Mysqlx.Session;
 
 namespace ParkingManagementSystem
 {
-    class ParkingLot : IDisposable
+    public class ParkingLot : IDisposable
     {
         private List<ParkingSlot> slots;
         private MySqlConnection connection;
@@ -25,18 +26,13 @@ namespace ParkingManagementSystem
             databaseOperations = new DatabaseOperations(connectionString);
         }
 
-        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string isPWD)
+        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, bool isPWD, string department)
         {
             int slotNumber = 1; // Start checking from the first slot
 
-            if(isPWD != "no")
+            if(isPWD == true)
             {
-                Console.Write("PWD? (yes or no): ");
-                isPWD = Console.ReadLine().ToLower();
-                if (isPWD == "yes")
-                {
-                    slotNumber = 9;
-                }
+                slotNumber = 9;
 
             }
 
@@ -46,8 +42,28 @@ namespace ParkingManagementSystem
             // Loop through the parking slots to find the first unoccupied slot
             while (slotNumber <= slots.Count && !slotFound)
             {
-                // Check if the slot is occupied by querying the database
-                string query = "SELECT isOccupied FROM ParkingEvents WHERE parkingSlot = @slotNumber;";
+                string query;
+                
+                if (department == "cics")
+                {
+                    query = "SELECT isOccupied FROM cics WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "ceafa")
+                {
+                    query = "SELECT isOccupied FROM ceafa WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "cit")
+                {
+                    query = "SELECT isOccupied FROM cit WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "coe")
+                {
+                    query = "SELECT isOccupied FROM coe WHERE parkingSlot = @slotNumber;";
+                }
+                else {
+                    continue;
+                }
+                
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@slotNumber", slotNumber);
@@ -82,7 +98,29 @@ namespace ParkingManagementSystem
                 emptySlot.EntryTime = DateTime.Now;
 
                 // Update the ParkingEvents table with the new parking information
-                string updateQuery = "UPDATE ParkingEvents SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                string updateQuery;
+
+                if (department == "cics")
+                {
+                    updateQuery = "UPDATE cics SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "ceafa")
+                {
+                    updateQuery = "UPDATE ceafa SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "cit")
+                {
+                    updateQuery = "UPDATE cit SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                }
+                else if (department == "coe")
+                {
+                    updateQuery = "UPDATE coe SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                }
+                else {
+                    updateQuery = "UPDATE cics SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                }
+
+
                 using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                 {
                     updateCommand.Parameters.AddWithValue("@isOccupied", true);
@@ -102,22 +140,41 @@ namespace ParkingManagementSystem
             }
             else
             {
-                if (isPWD == "yes")
+                if (isPWD == true)
                 {
-                    isPWD = "no";
-                    ParkVehicle(fullName, vehicleType, vehicleNumber, isPWD);
+                    isPWD = false;
+                    ParkVehicle(fullName, vehicleType, vehicleNumber, isPWD, department);
                 }
                 Console.WriteLine("Parking lot is full or no available slots.");
                 return false;
             }
         }
 
-        public bool LeaveParking(string vehicleNumber)
+        public bool LeaveParking(string vehicleNumber, string dep)
         {
             databaseOperations.SynchronizeSlotsWithDatabase(this.slots);
 
             // Check if the vehicle is in the parking lot by querying the database
-            string checkQuery = "SELECT parkingSlot FROM ParkingEvents WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+            string checkQuery;
+            if (dep == "cics") {
+                checkQuery = "SELECT parkingSlot FROM cics WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+
+            } else if (dep == "coe") {
+                checkQuery = "SELECT parkingSlot FROM coe WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+
+            } else if (dep =="ceafa") {
+                checkQuery = "SELECT parkingSlot FROM ceafa WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+
+            } else if (dep == "cit") {
+                checkQuery = "SELECT parkingSlot FROM cit WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+
+            }
+            else {
+                checkQuery = "SELECT parkingSlot FROM cics WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+
+            }
+
+
             int parkingSlotId = -1;
             using (MySqlCommand checkCommand = new MySqlCommand(checkQuery, connection))
             {
@@ -158,7 +215,33 @@ namespace ParkingManagementSystem
                     occupiedSlot.ExitTime = DateTime.MinValue;
 
                     // Update the ParkingEvents table to set all values to NULL
-                    string updateQuery = "UPDATE ParkingEvents SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+                    string updateQuery;
+                    if (dep == "cics")
+                    {
+                        updateQuery = "UPDATE cics SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                    }
+                    else if (dep == "coe")
+                    {
+
+                        updateQuery = "UPDATE coe SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                    }
+                    else if (dep == "cit")
+                    {
+                        updateQuery = "UPDATE cit SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                    }
+                    else if (dep == "ceafa")
+                    {
+                        updateQuery = "UPDATE ceafa SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                    }
+                    else {
+                        updateQuery = "UPDATE cics SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                    }
+
                     using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                     {
                         updateCommand.Parameters.AddWithValue("@parkingSlotId", parkingSlotId);
@@ -189,7 +272,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
 
             // Query to select all records from the ParkingEvents table
-            string query = "SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM ParkingEvents;";
+            string query = "SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM cics;";
 
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
@@ -249,6 +332,53 @@ namespace ParkingManagementSystem
                 }
             }
         }
+        public (string, string, string) GetSlotStatus(int slotNumber, string dep)
+        {
+            string status = "Available";
+            string vehicleNumber = "";
+            string fullName = "";
+
+           
+            string query;
+            if (dep == "cics")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cics WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "coe")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM coe WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "cit")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cit WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "ceafa")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM ceafa WHERE parkingSlot = @slotNumber;";
+            }
+            else {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cics WHERE parkingSlot = @slotNumber;";
+            }
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@slotNumber", slotNumber);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        bool isOccupied = reader["isOccupied"] != DBNull.Value && (bool)reader["isOccupied"];
+                        status = isOccupied ? "Occupied" : "Available";
+                        fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
+                        vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
+                    }
+                }
+            }
+
+            return (status, vehicleNumber, fullName);
+        }
+
 
         public void Dispose()
     {
