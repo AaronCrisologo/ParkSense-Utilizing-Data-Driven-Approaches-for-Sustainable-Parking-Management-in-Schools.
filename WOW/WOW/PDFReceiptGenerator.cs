@@ -4,15 +4,14 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.IO.Image;
-using System.Diagnostics;
 
 namespace ParkingManagementSystem
 {
-    public class PDFReceiptGenerator
+    class PDFReceiptGenerator
     {
         public static void GenerateReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
         {
-            string directoryPath = @"C:\Users\Nielle\Documents\Programming shit\C#\WOW\WOW\Receipts";
+            string directoryPath = @"C:\Users\SSD\Desktop\New folder";
             Directory.CreateDirectory(directoryPath);
 
             string fileName = Path.Combine(directoryPath, $"{vehicleNumber}.pdf");
@@ -37,7 +36,7 @@ namespace ParkingManagementSystem
                     Paragraph additionalInfo = new Paragraph("Thank you for using our parking services.\nHave a safe journey!\n\nPlease keep this receipt for future reference.").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
 
                     // Load the logo
-                    string logoPath = @"C:\Users\Nielle\Documents\Programming shit\C#\WOW\WOW\Logo.png";
+                    string logoPath = @"D:\HDD\School\Parking System Files C#\_c3eab08b-6a57-4be3-a880-534f2b7b795c1.png";
                     iText.Layout.Element.Image logo = new iText.Layout.Element.Image(ImageDataFactory.Create(logoPath));
                     logo.SetWidth(200); // Adjust the width of the logo as needed
                     logo.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.CENTER);
@@ -58,33 +57,6 @@ namespace ParkingManagementSystem
             }
 
             Console.WriteLine($"Receipt generated and saved in the Receipts Folder.");
-        }
-
-
-
-
-        public bool OpenPDF(string pdfFilePath, string pdfViewerPath)
-        {
-            try
-            {
-                // Check if the file exists
-                if (System.IO.File.Exists(pdfFilePath))
-                {
-                    // Start Adobe Acrobat and open the file
-                    Process.Start(pdfViewerPath, $"\"{pdfFilePath}\"");
-                    return true;
-                }
-                else
-                {
-                    
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                
-                return false;
-            }
         }
     }
 }
