@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 29, 2024 at 08:06 AM
+-- Generation Time: May 03, 2024 at 03:46 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -148,6 +148,27 @@ INSERT INTO `coe` (`parkingSlot`, `isOccupied`, `fullName`, `vehicleType`, `vehi
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `parkingcost`
+--
+
+CREATE TABLE `parkingcost` (
+  `vehicletype` varchar(15) NOT NULL,
+  `fee` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `parkingcost`
+--
+
+INSERT INTO `parkingcost` (`vehicletype`, `fee`) VALUES
+('4 Wheels', 30),
+('E-bike', 100),
+('Large Vehicle', 40),
+('Motorcycle', 15);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `parkingreceipts`
 --
 
@@ -194,6 +215,12 @@ ALTER TABLE `cit`
 ALTER TABLE `coe`
   ADD PRIMARY KEY (`parkingSlot`),
   ADD UNIQUE KEY `vehicleNumber` (`vehicleNumber`);
+
+--
+-- Indexes for table `parkingcost`
+--
+ALTER TABLE `parkingcost`
+  ADD PRIMARY KEY (`vehicletype`);
 
 --
 -- Indexes for table `parkingreceipts`
