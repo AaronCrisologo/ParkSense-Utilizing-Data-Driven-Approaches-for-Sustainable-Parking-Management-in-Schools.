@@ -1,8 +1,17 @@
 <img src="/images/logo.png" alt="GitHub Logo">
 
-<h2>"ParkSense: Utilizing Data-Driven Approaches for Sustainable Parking Management in Schools"</h2>
+<div style="background-color: #f0f0f0; border: 2px solid #ccc; padding: 20px;">
+<h2>
+	
+	"ParkSense:Utilizing Data-Driven Approaches for Sustainable Parking Management
+     in Schools"
+</h2>
+</div>
 
-<h3>1. Name of Team Members</h3>
+<div style="background-color: #f0f0f0; border: 2px solid #ccc; padding: 20px;">
+<details>
+  <summary><h2>1. Name of Team Members</h2></summary>
+  
 
 Barcelona, Nielle
 
@@ -11,6 +20,10 @@ Crisologo, Aaron Angelo
 Mirabel, Kevin Hans
 
 Ramos, Mark Kevin
+
+  
+</details>
+</div>
 
 <h3>2. Project Title</h3>
     ParkSense: Utilizing Data-Driven Approaches for Sustainable Parking Management in Schools
