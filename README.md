@@ -1,4 +1,8 @@
-# <p align="center"> ![GitHub Logo](https://example.com/images/logo.png) </p>
+
+<p align="center">
+  <img src="https://github.com/AaronCrisologo/ParkSense-Utilizing-Data-Driven-Approaches-for-Sustainable-Parking-Management-in-Schools./assets/124795403/5761e4c8-6261-4bdc-a182-17bb720b0454" alt="logo-removebg-preview" alt="Animated Image" width="300" height="250"/>
+</p>
+
 
 
 # <p align="center">"ParkSense: Utilizing Data-Driven Approaches for Sustainable Parking Management in Schools" </p>
