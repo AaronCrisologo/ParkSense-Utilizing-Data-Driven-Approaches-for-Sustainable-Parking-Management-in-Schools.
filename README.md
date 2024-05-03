@@ -1,3 +1,5 @@
+<img src="/images/logo.png" alt="GitHub Logo">
+
 <h2>"ParkSense: Utilizing Data-Driven Approaches for Sustainable Parking Management in Schools"</h2>
 
 <h3>1. Name of Team Members</h3>
