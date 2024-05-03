@@ -2,8 +2,11 @@
 
 1. Name of Team Members
 Barcelona, Nielle
+
 Crisologo, Aaron Angelo
+
 Mirabel, Kevin Hans
+
 Ramos, Mark Kevin
 
 **2. Project Title**. A clear and descriptive title for the project.
@@ -16,13 +19,14 @@ ParkSense: Utilizing Data Driven Approaches for Sustainable Parking Management i
 **4. Project Description.** An outline of the scope and limitations and constraints of the
 project. This should also include the features it will implement and the problem it will
 solve (if any). Include also the Sustainable Development Goal.
+
 Problem Solved:
 This project aims to solve the inefficiency and frustration associated with traditional parking management. It addresses issues like:
 Limited parking availability: Difficulty finding available parking spaces.
 Inefficient use of parking spaces: Faculty/staff parking in student areas or vice versa.
 Lack of transparency and fairness: Unclear allocation of parking privileges can lead to frustration.
 Traffic congestion: Caused by circling for parking spots.
-Features:
+**Features:**
 Access Control:
 Color Coding: Restricts parking based on car color (e.g., only red cars on Tuesdays)
 Number Coding: Regulates parking based on license plate number (similar to color coding)
@@ -33,13 +37,13 @@ Billing and Payment:
 Automatic Billing System: Simplifies payment after parking sessions
 History of Parking: Tracks parking transactions for users and administrators
 Data and Analytics:
-Real-time Occupancy Tracking: Displays available parking spaces
-Analytics Dashboard: Generates reports on usage patterns, revenue, and peak hours
+-Real-time Occupancy Tracking: Displays available parking spaces
+-Analytics Dashboard: Generates reports on usage patterns, revenue, and peak hours
 Accessibility and Enforcement:
-Priority Parking: Designates spots for disabled individuals
+-Priority Parking: Designates spots for disabled individuals
 Time Limit Enforcement: Automatically enforces parking duration and issues penalties
 Departmental Management:
-Departmentalized Parking: Allocates spaces and tracks usage by school department (CIT, CEAFA, CICS).
+-Departmentalized Parking: Allocates spaces and tracks usage by school department (CIT, CEAFA, CICS).
 Scope:
 This project focuses on developing a system for internal parking management. It will be used by parking administration staff only. Parkers will not directly interact with the system beyond receiving billing receipts.
 Limitations:
