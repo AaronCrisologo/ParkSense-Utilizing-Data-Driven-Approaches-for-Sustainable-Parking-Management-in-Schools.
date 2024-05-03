@@ -6,14 +6,14 @@ Crisologo, Aaron Angelo
 Mirabel, Kevin Hans
 Ramos, Mark Kevin
 
-2. Project Title. A clear and descriptive title for the project.
+**2. Project Title**. A clear and descriptive title for the project.
 ParkSense: Utilizing Data Driven Approaches for Sustainable Parking Management in Schools.
 
 3. Project Introduction that contains the project overview, purpose, and objectives.
 	Through a number of features, ParkSense seeks to effectively manage parking spaces, improve customer experience, and optimize operations. These features address a number of requirements, such as resource allocation, revenue optimization, user convenience, and regulatory compliance.
 	Its purpose and objective is to make parking operations efficient, satisfy users, and to automate the billing process. It can do this by the features it has, such as reservations, real-time occupancy tracking, automated billing, and analytics.
 
-4. Project Description. An outline of the scope and limitations and constraints of the
+**4. Project Description.** An outline of the scope and limitations and constraints of the
 project. This should also include the features it will implement and the problem it will
 solve (if any). Include also the Sustainable Development Goal.
 Problem Solved:
@@ -48,15 +48,15 @@ The system doesn't offer functionalities for parkers like real-time space bookin
 Sustainable Development Goal (SDG):
 This project indirectly supports SDG 11: Sustainable Cities and Communities by potentially reducing traffic congestion caused by circling for parking. A more efficient parking system can lead to smoother traffic flow and potentially lower emissions.
 
-5. Methodology. May include frameworks, tools to be utilized, or if there will be any
+**5. Methodology**. May include frameworks, tools to be utilized, or if there will be any
 design patterns to be followed.
 	We will use GitHub as it serves as the collaborative platform for version control and code management in the creation of the parking management system, enabling developers to store, track changes, and coordinate development efforts effectively. We will also use Windows Forms as our interface framework for easy-access for the users.
 
-6. Technologies. A list of the technologies that will be used in the project, including
+**6. Technologies.** A list of the technologies that will be used in the project, including
 programming languages, libraries, databases, and any other relevant tools or platforms.
 	C# will be the programming language used in this project. We will also use Visual Studio Code in creating the application. It’s possible that more technologies will be used as we get to know more about our project.
 	
-7. References. Citations or references to relevant literature, articles, research papers, or
+**7. References.** Citations or references to relevant literature, articles, research papers, or
 existing projects that have influenced or inspired the proposed project.
 Rashid, M. M., Musa, A., Rahman, M. A., Farahana, N., & Farhana, A. (2012). Automatic parking management system and parking fee collection based on number plate recognition. International Journal of Machine Learning and Computing, 2(2), 94.
 Vera-Gómez, J. A., Quesada-Arencibia, A., García, C. R., Suárez Moreno, R., & Guerra Hernández, F. (2016). An intelligent parking management system for urban areas. Sensors, 16(6), 931.
