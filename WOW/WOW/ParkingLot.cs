@@ -6,127 +6,106 @@ namespace ParkingManagementSystem
 {
     class ParkingLot : IDisposable
     {
-        private List<ParkingSlot> slots;
+        private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
         private MySqlConnection connection;
         private DatabaseOperations databaseOperations;
 
-        public ParkingLot(int capacity, string connectionString)
+        public ParkingLot(string connectionString)
         {
-            slots = new List<ParkingSlot>();
-            for (int i = 1; i <= capacity; i++)
-            {
-                slots.Add(new ParkingSlot());
-            }
-
             connection = new MySqlConnection(connectionString);
             connection.Open();
-
-            // Initialize the DatabaseOperations instance
             databaseOperations = new DatabaseOperations(connectionString);
         }
 
-        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string isPWD)
+        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string dep, string isPWD)
         {
-            int slotNumber = 1; // Start checking from the first slot
-
-            if(isPWD != "no")
-            {
-                Console.Write("PWD? (yes or no): ");
-                isPWD = Console.ReadLine().ToLower();
-                if (isPWD == "yes")
-                {
-                    slotNumber = 9;
-                }
-
-            }
+            // Determine the initial slot number based on isPWD flag
+            int slotNumber = isPWD == "yes" ? 9 : 1;
 
             bool slotFound = false;
-            ParkingSlot emptySlot = null;
 
-            // Loop through the parking slots to find the first unoccupied slot
-            while (slotNumber <= slots.Count && !slotFound)
+            while (slotNumber <= 10 && !slotFound)
             {
                 // Check if the slot is occupied by querying the database
-                string query = "SELECT isOccupied FROM ParkingEvents WHERE parkingSlot = @slotNumber;";
+                string query = $"SELECT isOccupied FROM {dep} WHERE parkingSlot = @slotNumber;";
+
                 using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@slotNumber", slotNumber);
+
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            // Check for DBNull before casting
                             bool isOccupied = !reader.IsDBNull(reader.GetOrdinal("isOccupied")) && reader.GetBoolean("isOccupied");
+
                             if (!isOccupied)
                             {
                                 // Slot is not occupied, use this slot
-                                emptySlot = slots[slotNumber - 1];
-                                slotFound = true;
+                                reader.Close(); // Close the DataReader before executing a new command
+
+                                try
+                                {
+                                    string updateQuery = $"UPDATE {dep} SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+
+                                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                                    {
+                                        updateCommand.Parameters.AddWithValue("@isOccupied", true);
+                                        updateCommand.Parameters.AddWithValue("@fullName", fullName);
+                                        updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
+                                        updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                                        updateCommand.Parameters.AddWithValue("@entryTime", DateTime.Now);
+                                        updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
+
+                                        updateCommand.ExecuteNonQuery();
+                                    }
+
+                                    Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
+                                    return true;
+                                }
+                                catch (MySqlException ex) when (ex.Number == 1062) // Duplicate entry
+                                {
+                                    Console.WriteLine($"Error: A vehicle with the number {vehicleNumber} is already parked.");
+                                    return false;
+                                }
                             }
                         }
                     }
                 }
-                if (!slotFound)
-                {
-                    slotNumber++; // Increment slot number and check the next slot
-                }
+
+                slotNumber++; // Move to the next slot
             }
 
-            if (slotFound && emptySlot != null)
+            if (isPWD == "yes")
             {
-                // Park the vehicle in the found slot and update the database
-                emptySlot.IsOccupied = true;
-                emptySlot.FullName = fullName;
-                emptySlot.VehicleType = vehicleType;
-                emptySlot.VehicleNumber = vehicleNumber;
-                emptySlot.EntryTime = DateTime.Now;
-
-                // Update the ParkingEvents table with the new parking information
-                string updateQuery = "UPDATE ParkingEvents SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
-                using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
-                {
-                    updateCommand.Parameters.AddWithValue("@isOccupied", true);
-                    updateCommand.Parameters.AddWithValue("@fullName", fullName);
-                    updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
-                    updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
-                    updateCommand.Parameters.AddWithValue("@entryTime", emptySlot.EntryTime);
-                    updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
-
-                    updateCommand.ExecuteNonQuery();
-                }
-
-                databaseOperations.SynchronizeSlotsWithDatabase(this.slots);
-
-                Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
-                return true;
+                isPWD = "no";
+                return ParkVehicle(fullName, vehicleType, vehicleNumber, dep, isPWD);
             }
-            else
-            {
-                if (isPWD == "yes")
-                {
-                    isPWD = "no";
-                    ParkVehicle(fullName, vehicleType, vehicleNumber, isPWD);
-                }
-                Console.WriteLine("Parking lot is full or no available slots.");
-                return false;
-            }
+            Console.WriteLine("Parking lot is full or no available slots.");
+            return false;
         }
 
-        public bool LeaveParking(string vehicleNumber)
+        public bool LeaveParking(string vehicleNumber, string dep)
         {
-            databaseOperations.SynchronizeSlotsWithDatabase(this.slots);
-
             // Check if the vehicle is in the parking lot by querying the database
-            string checkQuery = "SELECT parkingSlot FROM ParkingEvents WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
+            string checkQuery = $"SELECT parkingSlot, fullName, vehicleType, entryTime FROM {dep} WHERE vehicleNumber = @vehicleNumber AND isOccupied = TRUE;";
             int parkingSlotId = -1;
+            string fullName = "";
+            string vehicleType = "";
+            DateTime entryTime = DateTime.MinValue;
+
             using (MySqlCommand checkCommand = new MySqlCommand(checkQuery, connection))
             {
                 checkCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+
                 using (MySqlDataReader reader = checkCommand.ExecuteReader())
                 {
                     if (reader.Read())
                     {
                         parkingSlotId = reader.GetInt32("parkingSlot");
+                        fullName = reader.GetString("fullName");
+                        vehicleType = reader.GetString("vehicleType");
+                        entryTime = reader.GetDateTime("entryTime");
                     }
                 }
             }
@@ -134,45 +113,32 @@ namespace ParkingManagementSystem
             if (parkingSlotId != -1)
             {
                 // Vehicle found, proceed with leaving parking logic
-                var occupiedSlot = slots.FirstOrDefault(slot => slot.IsOccupied && slot.VehicleNumber == vehicleNumber);
-                if (occupiedSlot != null)
+                DateTime exitTime = DateTime.Now;
+
+                // Calculate duration of parking
+                TimeSpan duration = exitTime - entryTime;
+
+                // Instantiate CostCalculator to calculate total cost
+                CostCalculator costCalculator = new CostCalculator(connectionString);
+                double totalCost = costCalculator.CalculateTotalCost(duration, vehicleType);
+
+                // Insert parking receipt into the database
+                databaseOperations.InsertParkingReceipt(parkingSlotId, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost);
+
+                // Generate PDF receipt
+                PDFReceiptGenerator.GenerateReceipt(fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost);
+
+                // Reset the parking slot in memory
+                string updateQuery = $"UPDATE {dep} SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
+
+                using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                 {
-                    // Calculate the duration and total cost
-                    CostCalculator costCalculator = new CostCalculator();
-                    occupiedSlot.ExitTime = DateTime.Now;
-                    TimeSpan duration = occupiedSlot.ExitTime - occupiedSlot.EntryTime;
-                    double totalCost = costCalculator.CalculateTotalCost(duration);
-
-                    // Insert data into the ParkingReceipts table
-                    databaseOperations.InsertParkingReceipt(parkingSlotId, occupiedSlot.FullName, occupiedSlot.VehicleType, vehicleNumber, occupiedSlot.EntryTime, occupiedSlot.ExitTime, duration, totalCost);
-
-                    // Generate the PDF receipt
-                    PDFReceiptGenerator.GenerateReceipt(occupiedSlot.FullName, occupiedSlot.VehicleType, vehicleNumber, occupiedSlot.EntryTime, occupiedSlot.ExitTime, duration, totalCost);
-
-                    // Reset the parking slot
-                    occupiedSlot.IsOccupied = false;
-                    occupiedSlot.FullName = null;
-                    occupiedSlot.VehicleType = null;
-                    occupiedSlot.VehicleNumber = null;
-                    occupiedSlot.EntryTime = DateTime.MinValue;
-                    occupiedSlot.ExitTime = DateTime.MinValue;
-
-                    // Update the ParkingEvents table to set all values to NULL
-                    string updateQuery = "UPDATE ParkingEvents SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
-                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
-                    {
-                        updateCommand.Parameters.AddWithValue("@parkingSlotId", parkingSlotId);
-                        updateCommand.ExecuteNonQuery();
-                    }
-                    
-                    Console.WriteLine($"Vehicle {vehicleNumber} has left the parking lot. Duration: {duration}, Total Cost: {totalCost:C}.");
-                    return true;
+                    updateCommand.Parameters.AddWithValue("@parkingSlotId", parkingSlotId);
+                    updateCommand.ExecuteNonQuery();
                 }
-                else
-                {
-                    Console.WriteLine($"DEBUG: Vehicle {vehicleNumber} found in database but not in application memory.");
-                    return false;
-                }
+
+                Console.WriteLine($"Vehicle {vehicleNumber} has left the parking lot. Duration: {duration}, Total Cost: {totalCost:C}.");
+                return true;
             }
             else
             {
@@ -181,33 +147,40 @@ namespace ParkingManagementSystem
             }
         }
 
-        public void DisplayParkingStatus()
+        public void DisplayParkingStatus(string dep)
         {
             Console.WriteLine("Parking Status:");
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
             Console.WriteLine("| Slot Number |  Status   | Vehicle Number |  Vehicle Type  |     Driver's Name    |");
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
 
-            // Query to select all records from the ParkingEvents table
-            string query = "SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM ParkingEvents;";
+            // Query to select all records from the specific department table
+            string query = $"SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM {dep};";
 
-            using (MySqlCommand command = new MySqlCommand(query, connection))
+            try
             {
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    while (reader.Read())
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        int slotNumber = reader.GetInt32("parkingSlot");
-                        bool isOccupied = reader["isOccupied"] != DBNull.Value && (bool)reader["isOccupied"];
-                        string status = isOccupied ? "Occupied" : "Available";
-                        string fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
-                        string vehicleType = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleType")) ? reader.GetString("vehicleType") : "";
-                        string vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
+                        while (reader.Read())
+                        {
+                            int slotNumber = reader.GetInt32("parkingSlot");
+                            bool isOccupied = !reader.IsDBNull(reader.GetOrdinal("isOccupied")) && reader.GetBoolean("isOccupied");
+                            string status = isOccupied ? "Occupied" : "Available";
+                            string fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
+                            string vehicleType = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleType")) ? reader.GetString("vehicleType") : "";
+                            string vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
 
-                        // Display the status of each parking slot
-                        Console.WriteLine($"| {slotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
+                            // Display the status of each parking slot
+                            Console.WriteLine($"| {slotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred while displaying parking status: {ex.Message}");
             }
 
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");

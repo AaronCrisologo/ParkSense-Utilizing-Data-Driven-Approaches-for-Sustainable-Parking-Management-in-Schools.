@@ -6,7 +6,7 @@ namespace ParkingManagementSystem
 
         static void Main(string[] args)
         {
-            using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
+            using (ParkingLot parkingLot = new ParkingLot(connectionString))
 
             do
             {
@@ -36,18 +36,26 @@ namespace ParkingManagementSystem
                         Console.Write("Enter your car's license number: ");
                         string num = Console.ReadLine();
                         string pwd = null;
-                        parkingLot.ParkVehicle(fullName, vehicleType, num, pwd);
+                        Console.Write("which department(cics, coe, ceafa, cit): ");
+                        string dep = Console.ReadLine().ToLower();
+                        Console.Write("PWD? (yes or no): ");
+                        string isPWD = Console.ReadLine().ToLower();
+                        parkingLot.ParkVehicle(fullName, vehicleType, num, dep, isPWD);
                         Console.WriteLine("Your car has been parked");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 2:
                         Console.Write("Input your car's license number: ");
                         string car = Console.ReadLine();
-                        parkingLot.LeaveParking(car);
+                        Console.Write("which department(cics, coe, ceafa, cit): ");
+                        string depleave = Console.ReadLine().ToLower();
+                        parkingLot.LeaveParking(car, depleave);
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 3:
-                        parkingLot.DisplayParkingStatus();
+                        Console.Write("which department(cics, coe, ceafa, cit): ");
+                        string depstatus = Console.ReadLine().ToLower();
+                        parkingLot.DisplayParkingStatus(depstatus);
                         break;
                     case 4:
                         parkingLot.DisplayParkingLog();
