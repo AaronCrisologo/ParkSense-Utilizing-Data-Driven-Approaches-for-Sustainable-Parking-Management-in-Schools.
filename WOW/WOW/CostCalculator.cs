@@ -1,28 +1,68 @@
 using System;
+using MySql.Data.MySqlClient;
 
-namespace ParkingManagementSystem
+class CostCalculator
 {
-    class CostCalculator
+    private string connectionString;
+
+    public CostCalculator(string connectionString)
     {
-        public double CalculateTotalCost(TimeSpan duration, string vehicleType)
+        this.connectionString = connectionString;
+    }
+
+    public double CalculateTotalCost(TimeSpan duration, string vehicleType)
+    {
+        object queryResult;
+        double fee = 30;
+        double totalCost = 0;
+        double totalHours = duration.TotalHours;
+
+        try
         {
-            // Set parking fee initially as 0
-            int fee = 0;
-
-            // Add +30 to fee for every hour consumed
-            double totalHours = duration.TotalHours;
-            while (totalHours > 0)
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
-                fee += 30;
-                totalHours--;
-            }
+                connection.Open();
 
-            if (vehicleType.ToLower() == "motor" || vehicleType.ToLower() == "motorcycle" || vehicleType.ToLower() == "bike")
-            {
-            fee /= 2; // Divide total cost by 2 for motor, motorcycle, or bike
-            }
+                string vehicle = vehicleType.ToLower();
+                string query = "SELECT fee FROM rates WHERE vehicletype = @VehicleType";
 
-            return fee;
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@VehicleType", vehicle);
+
+                    queryResult = command.ExecuteScalar();
+
+                    if (queryResult != null)
+                    {
+                        if (double.TryParse(queryResult.ToString(), out fee))
+                        {
+                            while (totalHours > 0)
+                            {
+                                totalCost += fee;
+                                totalHours--;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to convert fee to double for vehicle type: " + vehicleType);
+                        }
+                    }
+                    else
+                    {
+                        while (totalHours > 0)
+                        {
+                            totalCost += fee;
+                            totalHours--;
+                        }
+                    }
+                }
+            }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+
+        return totalCost; // Return the total cost as a double
     }
 }

@@ -6,6 +6,7 @@ namespace ParkingManagementSystem
 {
     class ParkingLot : IDisposable
     {
+        private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
         private MySqlConnection connection;
         private DatabaseOperations databaseOperations;
 
@@ -43,22 +44,30 @@ namespace ParkingManagementSystem
                                 // Slot is not occupied, use this slot
                                 reader.Close(); // Close the DataReader before executing a new command
 
-                                string updateQuery = $"UPDATE {dep} SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
-
-                                using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                                try
                                 {
-                                    updateCommand.Parameters.AddWithValue("@isOccupied", true);
-                                    updateCommand.Parameters.AddWithValue("@fullName", fullName);
-                                    updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
-                                    updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
-                                    updateCommand.Parameters.AddWithValue("@entryTime", DateTime.Now);
-                                    updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
+                                    string updateQuery = $"UPDATE {dep} SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
 
-                                    updateCommand.ExecuteNonQuery();
+                                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                                    {
+                                        updateCommand.Parameters.AddWithValue("@isOccupied", true);
+                                        updateCommand.Parameters.AddWithValue("@fullName", fullName);
+                                        updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
+                                        updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                                        updateCommand.Parameters.AddWithValue("@entryTime", DateTime.Now);
+                                        updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
+
+                                        updateCommand.ExecuteNonQuery();
+                                    }
+
+                                    Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
+                                    return true;
                                 }
-
-                                Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
-                                return true;
+                                catch (MySqlException ex) when (ex.Number == 1062) // Duplicate entry
+                                {
+                                    Console.WriteLine($"Error: A vehicle with the number {vehicleNumber} is already parked.");
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -66,8 +75,8 @@ namespace ParkingManagementSystem
 
                 slotNumber++; // Move to the next slot
             }
-            
-            if(isPWD == "yes")
+
+            if (isPWD == "yes")
             {
                 isPWD = "no";
                 return ParkVehicle(fullName, vehicleType, vehicleNumber, dep, isPWD);
@@ -110,7 +119,7 @@ namespace ParkingManagementSystem
                 TimeSpan duration = exitTime - entryTime;
 
                 // Instantiate CostCalculator to calculate total cost
-                CostCalculator costCalculator = new CostCalculator();
+                CostCalculator costCalculator = new CostCalculator(connectionString);
                 double totalCost = costCalculator.CalculateTotalCost(duration, vehicleType);
 
                 // Insert parking receipt into the database
