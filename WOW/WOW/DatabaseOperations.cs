@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ParkingManagementSystem
 {
-    class DatabaseOperations : IDisposable
+   public class DatabaseOperations : IDisposable
     {
         private MySqlConnection connection;
 
@@ -20,7 +20,7 @@ namespace ParkingManagementSystem
             slots.Clear();
 
             // Retrieve the current state from the database and update the slots list
-            string query = "SELECT * FROM ParkingEvents WHERE isOccupied = TRUE;";
+            string query = "SELECT * FROM cics WHERE isOccupied = TRUE;";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -56,11 +56,11 @@ namespace ParkingManagementSystem
             }
         }
 
-        public void InsertParkingReceipt(int parkingSlotId, string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
+        public void InsertParkingReceipt(int parkingSlotId, string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost, string dep)
         {
             string query = @"
-                INSERT INTO ParkingReceipts (parkingSlot, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost)
-                VALUES (@parkingSlotId, @fullName, @vehicleType, @vehicleNumber, @entryTime, @exitTime, @duration, @totalCost);
+                INSERT INTO ParkingReceipts (parkingSlot, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost, department)
+                VALUES (@parkingSlotId, @fullName, @vehicleType, @vehicleNumber, @entryTime, @exitTime, @duration, @totalCost, @department);
             ";
 
             using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -73,6 +73,7 @@ namespace ParkingManagementSystem
                 command.Parameters.AddWithValue("@exitTime", exitTime);
                 command.Parameters.AddWithValue("@duration", duration.ToString(@"hh\:mm\:ss"));
                 command.Parameters.AddWithValue("@totalCost", totalCost);
+                command.Parameters.AddWithValue("@department", dep.ToUpper());
 
                 command.ExecuteNonQuery();
             }

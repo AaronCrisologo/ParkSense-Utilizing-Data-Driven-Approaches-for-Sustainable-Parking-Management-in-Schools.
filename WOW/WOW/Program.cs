@@ -1,15 +1,17 @@
 namespace ParkingManagementSystem
 {
-    class Program
+    public class Program
     {
         private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
 
         static void Main(string[] args)
         {
-            using (ParkingLot parkingLot = new ParkingLot(connectionString))
+            using (ParkingLot parkingLot = new ParkingLot(10, connectionString))
 
             do
             {
+                int num1 = parkingLot.GetAvailableSlotsCount("cics");
+                Console.WriteLine(num1);
                 Console.WriteLine("-----Welcome to Parksense-----");
                 Console.WriteLine("Would you like to park your car?,   press 1");
                 Console.WriteLine("Do you want to take your car?,      press 2");
@@ -31,6 +33,7 @@ namespace ParkingManagementSystem
                     case 1:
                         Console.Write("Enter your full name: ");
                         string fullName = Console.ReadLine();
+                        Thread.Sleep(1000);
                         Console.Write("Enter your vehicle type: ");
                         string vehicleType = Console.ReadLine();
                         Console.Write("Enter your car's license number: ");
@@ -38,24 +41,18 @@ namespace ParkingManagementSystem
                         string pwd = null;
                         Console.Write("which department(cics, coe, ceafa, cit): ");
                         string dep = Console.ReadLine().ToLower();
-                        Console.Write("PWD? (yes or no): ");
-                        string isPWD = Console.ReadLine().ToLower();
-                        parkingLot.ParkVehicle(fullName, vehicleType, num, dep, isPWD);
+                        parkingLot.ParkVehicle(fullName, vehicleType, num, "yes", dep);
                         Console.WriteLine("Your car has been parked");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 2:
                         Console.Write("Input your car's license number: ");
                         string car = Console.ReadLine();
-                        Console.Write("which department(cics, coe, ceafa, cit): ");
-                        string depleave = Console.ReadLine().ToLower();
-                        parkingLot.LeaveParking(car, depleave);
+                        parkingLot.LeaveParking(car, "ceafa");
                         Console.WriteLine("++++++++++++++++++++++++++++\n");
                         break;
                     case 3:
-                        Console.Write("which department(cics, coe, ceafa, cit): ");
-                        string depstatus = Console.ReadLine().ToLower();
-                        parkingLot.DisplayParkingStatus(depstatus);
+                        parkingLot.DisplayParkingStatus();
                         break;
                     case 4:
                         parkingLot.DisplayParkingLog();

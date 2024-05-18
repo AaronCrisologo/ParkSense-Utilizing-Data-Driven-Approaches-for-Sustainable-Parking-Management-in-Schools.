@@ -1,10 +1,14 @@
- namespace GUI
+
+namespace GUI
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        private string user;
+        public Form1(string pass)
         {
             InitializeComponent();
+            user = pass;
+
         }
         bool parkingExpand = true;
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -34,10 +38,14 @@
 
 
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            greet.Text = $"Welcome, {user}";
+        }
 
         private void dashboardbtn_Click(object sender, EventArgs e)
         {
-            loadform(new Dashboard());
+            loadform(new dashboard(user));
         }
 
         private void cics_Click(object sender, EventArgs e)
@@ -62,12 +70,13 @@
 
         private void parkingcontainer_Paint(object sender, PaintEventArgs e)
         {
-            
+
         }
 
         private void parkingbtn_Click(object sender, EventArgs e)
         {
             parkingtransition.Start();
+
         }
 
         private void parkingcontainer_Paint_1(object sender, PaintEventArgs e)
@@ -80,7 +89,7 @@
             if (parkingExpand == false)
             {
                 parkingcontainer.Height += 10;
-                if (parkingcontainer.Height >= 214)
+                if (parkingcontainer.Height >= 250)
                 {
                     parkingtransition.Stop();
                     parkingExpand = true;
@@ -95,6 +104,23 @@
                     parkingExpand = false;
                 }
             }
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            loadform(new log());
+        }
+
+        private void greet_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void logoutbtn_Click(object sender, EventArgs e)
+        {
+            new login().Show();
+            this.Close();
+            user = "";
         }
     }
 }

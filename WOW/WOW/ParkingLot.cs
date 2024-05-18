@@ -1,23 +1,99 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Runtime.Intrinsics.Arm;
+using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
+using Mysqlx.Session;
 
 namespace ParkingManagementSystem
 {
-    class ParkingLot : IDisposable
+    public class ParkingLot : IDisposable
     {
         private static string connectionString = "server=localhost;database=parkinglot1;uid=root;pwd=password;";
+
+        private List<ParkingSlot> slots;
         private MySqlConnection connection;
         private DatabaseOperations databaseOperations;
 
-        public ParkingLot(string connectionString)
+        public ParkingLot(int capacity, string connectionString)
         {
+            slots = new List<ParkingSlot>();
+            for (int i = 1; i <= capacity; i++)
+            {
+                slots.Add(new ParkingSlot());
+            }
+
             connection = new MySqlConnection(connectionString);
             connection.Open();
+
+            // Initialize the DatabaseOperations instance
             databaseOperations = new DatabaseOperations(connectionString);
         }
+        public int GetAvailableSlotsCount(string tableName)
+        {
+            int availableSlots = 0;
 
-        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string dep, string isPWD)
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = $"SELECT COUNT(*) FROM {tableName} WHERE COALESCE(isOccupied, 0) = 0";
+
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        object result = command.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result.ToString(), out int count))
+                        {
+                            availableSlots = count;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed to retrieve available slots count for table: " + tableName);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+
+            return availableSlots;
+        }
+        public string GetVehicleFeeAsString(string vehicleType)
+        {
+            string fee = "";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                string query = "SELECT fee FROM rates WHERE vehicletype = @VehicleType";
+                MySqlCommand command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@VehicleType", vehicleType);
+
+                try
+                {
+                    connection.Open();
+                    object result = command.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                    {
+                        fee = result.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+
+            return fee;
+        }
+
+
+        public bool ParkVehicle(string fullName, string vehicleType, string vehicleNumber, string isPWD, string dep)
         {
             // Determine the initial slot number based on isPWD flag
             int slotNumber = isPWD == "yes" ? 9 : 1;
@@ -44,30 +120,40 @@ namespace ParkingManagementSystem
                                 // Slot is not occupied, use this slot
                                 reader.Close(); // Close the DataReader before executing a new command
 
-                                try
-                                {
-                                    string updateQuery = $"UPDATE {dep} SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+                                // Check if the vehicle already exists in the parking area
+                                string checkExistingQuery = $"SELECT COUNT(*) FROM {dep} WHERE vehicleNumber = @vehicleNumber;";
 
-                                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                                using (MySqlCommand checkExistingCommand = new MySqlCommand(checkExistingQuery, connection))
+                                {
+                                    checkExistingCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+
+                                    int existingCount = Convert.ToInt32(checkExistingCommand.ExecuteScalar());
+
+                                    if (existingCount > 0)
                                     {
-                                        updateCommand.Parameters.AddWithValue("@isOccupied", true);
-                                        updateCommand.Parameters.AddWithValue("@fullName", fullName);
-                                        updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
-                                        updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
-                                        updateCommand.Parameters.AddWithValue("@entryTime", DateTime.Now);
-                                        updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
-
-                                        updateCommand.ExecuteNonQuery();
+                                        // Vehicle already exists in the parking area
+                                        Console.WriteLine($"Vehicle {vehicleNumber} already exists in the parking area.");
+                                        return false;
                                     }
+                                }
 
-                                    Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
-                                    return true;
-                                }
-                                catch (MySqlException ex) when (ex.Number == 1062) // Duplicate entry
+                                // Park the vehicle in the slot
+                                string updateQuery = $"UPDATE {dep} SET isOccupied = @isOccupied, fullName = @fullName, vehicleType = @vehicleType, vehicleNumber = @vehicleNumber, entryTime = @entryTime WHERE parkingSlot = @slotNumber;";
+
+                                using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
                                 {
-                                    Console.WriteLine($"Error: A vehicle with the number {vehicleNumber} is already parked.");
-                                    return false;
+                                    updateCommand.Parameters.AddWithValue("@isOccupied", true);
+                                    updateCommand.Parameters.AddWithValue("@fullName", fullName);
+                                    updateCommand.Parameters.AddWithValue("@vehicleType", vehicleType);
+                                    updateCommand.Parameters.AddWithValue("@vehicleNumber", vehicleNumber);
+                                    updateCommand.Parameters.AddWithValue("@entryTime", DateTime.Now);
+                                    updateCommand.Parameters.AddWithValue("@slotNumber", slotNumber);
+
+                                    updateCommand.ExecuteNonQuery();
                                 }
+
+                                Console.WriteLine($"Vehicle {vehicleNumber} (Driver: {fullName}) parked at slot {slotNumber}.");
+                                return true;
                             }
                         }
                     }
@@ -84,6 +170,7 @@ namespace ParkingManagementSystem
             Console.WriteLine("Parking lot is full or no available slots.");
             return false;
         }
+
 
         public bool LeaveParking(string vehicleNumber, string dep)
         {
@@ -123,10 +210,10 @@ namespace ParkingManagementSystem
                 double totalCost = costCalculator.CalculateTotalCost(duration, vehicleType);
 
                 // Insert parking receipt into the database
-                databaseOperations.InsertParkingReceipt(parkingSlotId, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost);
+                databaseOperations.InsertParkingReceipt(parkingSlotId, fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost, dep);
 
                 // Generate PDF receipt
-                PDFReceiptGenerator.GenerateReceipt(fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost);
+                PDFReceiptGenerator.GenerateReceipt(fullName, vehicleType, vehicleNumber, entryTime, exitTime, duration, totalCost, dep);
 
                 // Reset the parking slot in memory
                 string updateQuery = $"UPDATE {dep} SET isOccupied = NULL, fullName = NULL, vehicleType = NULL, vehicleNumber = NULL, entryTime = NULL WHERE parkingSlot = @parkingSlotId;";
@@ -147,40 +234,33 @@ namespace ParkingManagementSystem
             }
         }
 
-        public void DisplayParkingStatus(string dep)
+        public void DisplayParkingStatus()
         {
             Console.WriteLine("Parking Status:");
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
             Console.WriteLine("| Slot Number |  Status   | Vehicle Number |  Vehicle Type  |     Driver's Name    |");
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
 
-            // Query to select all records from the specific department table
-            string query = $"SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM {dep};";
+            // Query to select all records from the ParkingEvents table
+            string query = "SELECT parkingSlot, isOccupied, fullName, vehicleType, vehicleNumber FROM cics;";
 
-            try
+            using (MySqlCommand command = new MySqlCommand(query, connection))
             {
-                using (MySqlCommand command = new MySqlCommand(query, connection))
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            int slotNumber = reader.GetInt32("parkingSlot");
-                            bool isOccupied = !reader.IsDBNull(reader.GetOrdinal("isOccupied")) && reader.GetBoolean("isOccupied");
-                            string status = isOccupied ? "Occupied" : "Available";
-                            string fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
-                            string vehicleType = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleType")) ? reader.GetString("vehicleType") : "";
-                            string vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
+                        int slotNumber = reader.GetInt32("parkingSlot");
+                        bool isOccupied = reader["isOccupied"] != DBNull.Value && (bool)reader["isOccupied"];
+                        string status = isOccupied ? "Occupied" : "Available";
+                        string fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
+                        string vehicleType = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleType")) ? reader.GetString("vehicleType") : "";
+                        string vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
 
-                            // Display the status of each parking slot
-                            Console.WriteLine($"| {slotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
-                        }
+                        // Display the status of each parking slot
+                        Console.WriteLine($"| {slotNumber,-11} | {status,-9} | {vehicleNumber,-14} | {vehicleType,-15} | {fullName,-20} |");
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred while displaying parking status: {ex.Message}");
             }
 
             Console.WriteLine("+-------------+-----------+----------------+-----------------+----------------------+");
@@ -222,6 +302,93 @@ namespace ParkingManagementSystem
                 }
             }
         }
+        public (string, string, string) GetSlotStatus(int slotNumber, string dep)
+        {
+            string status = "Available";
+            string vehicleNumber = "";
+            string fullName = "";
+
+           
+            string query;
+            if (dep == "cics")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cics WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "coe")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM coe WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "cit")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cit WHERE parkingSlot = @slotNumber;";
+            }
+            else if (dep == "ceafa")
+            {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM ceafa WHERE parkingSlot = @slotNumber;";
+            }
+            else {
+                query = "SELECT isOccupied, fullName, vehicleNumber FROM cics WHERE parkingSlot = @slotNumber;";
+            }
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@slotNumber", slotNumber);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        bool isOccupied = reader["isOccupied"] != DBNull.Value && (bool)reader["isOccupied"];
+                        status = isOccupied ? "Occupied" : "Available";
+                        fullName = isOccupied && !reader.IsDBNull(reader.GetOrdinal("fullName")) ? reader.GetString("fullName") : "";
+                        vehicleNumber = isOccupied && !reader.IsDBNull(reader.GetOrdinal("vehicleNumber")) ? reader.GetString("vehicleNumber") : "";
+                    }
+                }
+            }
+
+            return (status, vehicleNumber, fullName);
+        }
+
+        public bool valueoverride(string connectionString, string vehicletype, int fee)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string vehicle = vehicletype.ToLower();
+
+                    // Construct the update query with parameters
+                    string updateQuery = "UPDATE rates SET fee = @Fee WHERE vehicletype = @VehicleType";
+
+                    using (MySqlCommand updateCommand = new MySqlCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@Fee", fee);
+                        updateCommand.Parameters.AddWithValue("@VehicleType", vehicle);
+
+                        // Execute the update query
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+
+                        // Check if any rows were affected by the update
+                        if (rowsAffected > 0)
+                            return true;
+                        else
+                            return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                //Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
+
 
         public void Dispose()
     {

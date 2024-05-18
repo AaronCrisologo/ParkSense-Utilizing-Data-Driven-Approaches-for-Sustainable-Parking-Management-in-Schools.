@@ -118,6 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="logbtn.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAs5JREFUeF7tms2LTlEcxx/G20SYUGrYEI3I646ipFAki1H8B/4AJZYiycqKhSKM
+        t8xkEmnYKFkJC82CBbJTUkoW9Ph8zz3P071n7s7tnPM0v0996pzzO/O79/k+LzPPndsyDMMwjEZZiA9w
+        rptVWYCj2O9mVbSmmvaEqJd6qnf2DGEbl7tZldWo2ko3q6I11bQnRL1UU+/smVYBnMQrgXdRJ3ujtNbx
+        Nqp2q7TWUWuqaU9YUy/V1Dus6RyS8Qtf4L2ST1AnO15a6/gYVXtUWuuoNdW0J6ypl2rqXV7XsXUOydDB
+        9xfDLjHfAjq2BVAM01AXgH5lncE+N6syB1Wb5WZVtKaa9oSol2rhr9YsA4iJBYAWQDFMgwWAFkAxTEKW
+        ASzCz/i9YdVTvctk+wrYh8MNq54h2QYQCwsALYBimAYLAMMA9KXmFJ5vWPUMv0RlGcB8HMOJhlVP9S6T
+        ZQAxsQDQAiiGabAAsC6AZbiqYdUzJMsA9IXlD+oiZpOqZ898GdJV3Lpn8X+su8qcbQCxsADQAiiGaZj2
+        AfzGc1h3BSeGOrbOIRl/8SfWXcOLoY6tc0iGfQagBVAMq7Tb7dk44KddWFuLa/zUwXwebsLun7uMZ+B6
+        XOGX6sg6gAM44qcO5pfwHb7Ba35tECfxIX7Ew6gH/xRf4mvUv8bryDqAg6j7fRyMN+B77MOZqBCG8AKe
+        8Hv0jF/HxfgD+1GvpOeuyVR6KgA9s7rZycH4Kh7BUdyD63AYd/r6WfyCF3HQ/dBUeioAPUjdCOlgfAcP
+        4QgqiL14GfUWGcDNuARP46T/sZDsA9D7eJt3KX5CPdDd+BX1AI/iK9SH4DF8i3orfMCtqP3fsO6Wm6wD
+        2IgTJTXfgvdxHHf4rdp7HJ/hTdzu1/SqGEN9OO5yG6eSbwCRsADQAiiGadDBw1tlY5r8Vtm6m6Vjm/Rm
+        acMwDMMwjB6l1foHceHVojG1zpAAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="parkingbtn.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -136,7 +154,7 @@
         /bCvwPIAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="cit.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="coe.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         DAAACwwBP0AiyAAAANpJREFUSEvtlEkOgkAQALmIfxF8KkSC0ce4fAJ9iMtRg9XQBy8QuoeEy1RSCQl0
@@ -156,7 +174,7 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="coe.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="cit.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         DAAACwwBP0AiyAAAANpJREFUSEvtlEkOgkAQALmIfxF8KkSC0ce4fAJ9iMtRg9XQBy8QuoeEy1RSCQl0

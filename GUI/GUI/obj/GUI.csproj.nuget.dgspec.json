@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\GUI\\GUI\\GUI.csproj": {}
+    "D:\\HDD\\School\\Parking System Files C#\\AOOP\\GUI\\GUI\\GUI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\GUI\\GUI\\GUI.csproj": {
+    "D:\\HDD\\School\\Parking System Files C#\\AOOP\\GUI\\GUI\\GUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\GUI\\GUI\\GUI.csproj",
+        "projectUniqueName": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\GUI\\GUI\\GUI.csproj",
         "projectName": "GUI",
-        "projectPath": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\GUI\\GUI\\GUI.csproj",
-        "packagesPath": "C:\\Users\\Nielle\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\GUI\\GUI\\obj\\",
+        "projectPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\GUI\\GUI\\GUI.csproj",
+        "packagesPath": "C:\\Users\\SSD\\.nuget\\packages\\",
+        "outputPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\GUI\\GUI\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Nielle\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SSD\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -27,7 +31,11 @@
         "frameworks": {
           "net8.0-windows7.0": {
             "targetAlias": "net8.0-windows",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj": {
+                "projectPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -44,6 +52,12 @@
       "frameworks": {
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -61,6 +75,92 @@
             },
             "Microsoft.WindowsDesktop.App.WindowsForms": {
               "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj",
+        "projectName": "WOW",
+        "projectPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj",
+        "packagesPath": "C:\\Users\\SSD\\.nuget\\packages\\",
+        "outputPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\SSD\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BouncyCastle.NetCore": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            },
+            "iTextSharp": {
+              "target": "Package",
+              "version": "[5.5.13.3, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "itext7.bouncy-castle-fips-adapter": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"

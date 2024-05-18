@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\WOW.csproj": {}
+    "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\WOW.csproj": {
+    "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\WOW.csproj",
+        "projectUniqueName": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj",
         "projectName": "WOW",
-        "projectPath": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\WOW.csproj",
-        "packagesPath": "C:\\Users\\Nielle\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\obj\\",
+        "projectPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\WOW.csproj",
+        "packagesPath": "C:\\Users\\SSD\\.nuget\\packages\\",
+        "outputPath": "D:\\HDD\\School\\Parking System Files C#\\AOOP\\WOW\\WOW\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Nielle\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\SSD\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -51,7 +55,7 @@
             },
             "MySql.Data": {
               "target": "Package",
-              "version": "[8.3.0, )"
+              "version": "[8.4.0, )"
             },
             "iTextSharp": {
               "target": "Package",
