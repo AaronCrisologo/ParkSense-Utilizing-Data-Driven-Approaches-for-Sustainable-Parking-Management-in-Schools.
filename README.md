@@ -22,56 +22,32 @@
 ##  IMPORTANT ⚠
 Make sure to use the provided SQL file and make certain changes on the code to avoid errors while running the program.
 
-File that needs to be changed for SQL connection string:
-
-	User Management (For Employees Only)
- 
-	Billing and Payment
- 
-	Automatic Billing System
- 
-	History of Parking
- 
-	Data and Analytics
- 
-	Real-time Occupancy Tracking
- 
-	Analytics Dashboard
- 
-	Accessibility and Enforcement
- 
-	Priority Parking
- 
-	Time Limit Enforcement
- 
-	Departmental Management
- 
-	Departmentalized Parking
+Also make sure to have MySQL.data nuget package installed on the solution to connect Visual Studio to the SQL database.
 
  File that needs to be changed for file path reading and writing:
  
-	Billing and Payment
- 
-	Automatic Billing System
- 
-	History of Parking
- 
-	Data and Analytics
- 
-	Real-time Occupancy Tracking
- 
-	Analytics Dashboard
- 
-	Accessibility and Enforcement
- 
-	Priority Parking
- 
-	Time Limit Enforcement
- 
-	Departmental Management
- 
-	Departmentalized Parking
+	PDFReceiptGenerator.cs: Logo path and File path
 
+Files that needs to be changed/matched for SQL connection string:
+
+	accounts.cs
+ 
+	ceafa.cs
+ 
+	cit.cs
+ 
+	coe.cs
+ 
+	Form2.cs
+ 
+	log.cs
+ 
+	login.cs
+ 
+	ParkingLot.cs
+ 
+	Program.cs
+By default the values of the connectionString is "server=localhost;database=parkinglot1;uid=root;pwd=password;" so make appropriate changes if necessary. 
 
 ##  1. Name of Team Members👥
   
