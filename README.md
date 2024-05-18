@@ -22,11 +22,13 @@
 ##  IMPORTANT ⚠
 Make sure to use the provided SQL file and make certain changes on the code to avoid errors while running the program.
 
-Also make sure to have MySQL.data nuget package installed on the solution to connect Visual Studio to the SQL database.
+Also make sure to have MySQL.data NuGet package installed on the solution to connect Visual Studio to the SQL database.
 
- File that needs to be changed for file path reading and writing:
+Things to change on PDFReceiptGenerator.cs:
  
-	PDFReceiptGenerator.cs: Logo path and File path
+	Logo path: Navigate the WOW folder to find Logo.png then edit the string logoPath on PDFReceiptGenerator.cs to correctly point to that file.
+
+ 	Directory path: This points to where receipts will be saved on your machine. You can use any directory you wont so long as the program is allowed to write on it, just edit string directoryPath to your desired location.
 
 Files that needs to be changed/matched for SQL connection string:
 
