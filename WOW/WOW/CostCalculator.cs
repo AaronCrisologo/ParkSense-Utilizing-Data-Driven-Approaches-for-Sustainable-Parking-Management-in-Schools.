@@ -1,7 +1,7 @@
 using System;
 using MySql.Data.MySqlClient;
 
-class CostCalculator
+public class CostCalculator
 {
     private string connectionString;
 
@@ -65,4 +65,42 @@ class CostCalculator
 
         return totalCost; // Return the total cost as a double
     }
+    public double CalculateTotalCostForDepartment(string department, string connection1)
+    {
+        double totalCost = 0;
+
+        try
+        {
+            using (MySqlConnection connection = new MySqlConnection(connection1))
+            {
+                connection.Open();
+
+                string query = "SELECT totalcost FROM parkingreceipts WHERE department = @Department";
+
+                using (MySqlCommand command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Department", department);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                totalCost += reader.GetDouble(0);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+
+        return totalCost;
+    }
+
+
 }

@@ -4,12 +4,13 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.IO.Image;
+using System.Diagnostics;
 
 namespace ParkingManagementSystem
 {
-    class PDFReceiptGenerator
+    public class PDFReceiptGenerator
     {
-        public static void GenerateReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost)
+        public static void GenerateReceipt(string fullName, string vehicleType, string vehicleNumber, DateTime entryTime, DateTime exitTime, TimeSpan duration, double totalCost, string dep)
         {
             string directoryPath = @"C:\Users\SSD\Desktop\New folder";
             Directory.CreateDirectory(directoryPath);
@@ -31,12 +32,13 @@ namespace ParkingManagementSystem
                     Paragraph vehicleInfo = new Paragraph($"Vehicle License: {vehicleNumber}").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
                     Paragraph entryInfo = new Paragraph($"Entry Time: {entryTime}").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
                     Paragraph exitInfo = new Paragraph($"Exit Time: {exitTime}").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
+                    Paragraph department = new Paragraph($"Department: {dep.ToUpper()}").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
                     Paragraph durationInfo = new Paragraph($"Duration: {duration}").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
                     Paragraph costInfo = new Paragraph($"Total Cost: {totalCost} PHP").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
                     Paragraph additionalInfo = new Paragraph("Thank you for using our parking services.\nHave a safe journey!\n\nPlease keep this receipt for future reference.").SetFontSize(16).SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER);
 
                     // Load the logo
-                    string logoPath = @"D:\HDD\School\Parking System Files C#\_c3eab08b-6a57-4be3-a880-534f2b7b795c1.png";
+                    string logoPath = @"C:\Users\SSD\Desktop\New folder\Logo.png";
                     iText.Layout.Element.Image logo = new iText.Layout.Element.Image(ImageDataFactory.Create(logoPath));
                     logo.SetWidth(200); // Adjust the width of the logo as needed
                     logo.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.CENTER);
@@ -49,6 +51,7 @@ namespace ParkingManagementSystem
                     document.Add(vehicleInfo);
                     document.Add(entryInfo);
                     document.Add(exitInfo);
+                    document.Add(department);
                     document.Add(durationInfo);
                     document.Add(costInfo);
                     document.Add(line); // Add another line
@@ -57,6 +60,33 @@ namespace ParkingManagementSystem
             }
 
             Console.WriteLine($"Receipt generated and saved in the Receipts Folder.");
+        }
+
+
+
+
+        public bool OpenPDF(string pdfFilePath, string pdfViewerPath)
+        {
+            try
+            {
+                // Check if the file exists
+                if (System.IO.File.Exists(pdfFilePath))
+                {
+                    // Start Adobe Acrobat and open the file
+                    Process.Start(pdfViewerPath, $"\"{pdfFilePath}\"");
+                    return true;
+                }
+                else
+                {
+                    
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                
+                return false;
+            }
         }
     }
 }

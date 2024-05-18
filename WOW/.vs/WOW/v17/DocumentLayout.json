@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|c:\\users\\nielle\\documents\\programming shit\\c#\\wow\\wow\\parkinglot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|solutionrelative:wow\\parkinglot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|c:\\users\\nielle\\documents\\programming shit\\c#\\wow\\wow\\parkingslot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|solutionrelative:wow\\parkingslot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|c:\\users\\nielle\\documents\\programming shit\\c#\\wow\\wow\\pdfreceiptgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|solutionrelative:wow\\pdfreceiptgenerator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|c:\\users\\nielle\\documents\\programming shit\\c#\\wow\\wow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BF9F0E71-23D7-4F63-BF53-05643DA64026}|WOW\\WOW.csproj|solutionrelative:wow\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ParkingLot.cs",
+              "DocumentMoniker": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\ParkingLot.cs",
+              "RelativeDocumentMoniker": "WOW\\ParkingLot.cs",
+              "ToolTip": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\ParkingLot.cs",
+              "RelativeToolTip": "WOW\\ParkingLot.cs",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAYwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-26T23:30:41.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ParkingSlot.cs",
+              "DocumentMoniker": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\ParkingSlot.cs",
+              "RelativeDocumentMoniker": "WOW\\ParkingSlot.cs",
+              "ToolTip": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\ParkingSlot.cs",
+              "RelativeToolTip": "WOW\\ParkingSlot.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-26T23:30:39.451Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PDFReceiptGenerator.cs",
+              "DocumentMoniker": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\PDFReceiptGenerator.cs",
+              "RelativeDocumentMoniker": "WOW\\PDFReceiptGenerator.cs",
+              "ToolTip": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\PDFReceiptGenerator.cs",
+              "RelativeToolTip": "WOW\\PDFReceiptGenerator.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACYAAABnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-26T23:29:24.239Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\Program.cs",
+              "RelativeDocumentMoniker": "WOW\\Program.cs",
+              "ToolTip": "C:\\Users\\Nielle\\Documents\\Programming shit\\C#\\WOW\\WOW\\Program.cs",
+              "RelativeToolTip": "WOW\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-19T23:37:11.592Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

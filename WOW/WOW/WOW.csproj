@@ -12,7 +12,7 @@
     <PackageReference Include="itext7" Version="8.0.3" />
     <PackageReference Include="itext7.bouncy-castle-fips-adapter" Version="8.0.3" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
-    <PackageReference Include="MySql.Data" Version="8.3.0" />
+    <PackageReference Include="MySql.Data" Version="8.4.0" />
   </ItemGroup>
 
 </Project>

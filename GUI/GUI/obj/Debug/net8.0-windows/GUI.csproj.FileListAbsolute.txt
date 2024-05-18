@@ -1,22 +1,145 @@
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\WOW.deps.json
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\WOW.runtimeconfig.json
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\WOW.exe
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\GUI.exe
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\GUI.deps.json
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\GUI.runtimeconfig.json
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\GUI.dll
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\GUI.pdb
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\BouncyCastle.Crypto.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\BouncyCastle.Cryptography.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Google.Protobuf.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.barcodes.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.bouncy-castle-connector.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.forms.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.io.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.kernel.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.layout.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.pdfa.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.pdfua.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.sign.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.styledxmlparser.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.svg.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\bc-fips-1.0.2.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\bcpkix-fips-1.0.2.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.bouncy-castle-fips-adapter.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itext.commons.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\itextsharp.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\K4os.Compression.LZ4.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\K4os.Compression.LZ4.Streams.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\K4os.Hash.xxHash.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Primitives.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\MySql.Data.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\System.IO.Pipelines.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\ZstdSharp.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\comerr64.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\gssapi64.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\k5sprt64.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\krb5_64.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\krbcc64.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\WOW.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\bin\Debug\net8.0-windows\WOW.pdb
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.AssemblyReference.cache
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.ceafa.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.cit.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.coe.resources
-C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.Dashboard.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.Form1.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.cics.resources
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.log.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.Properties.Resources.resources
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.GenerateResource.cache
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.AssemblyInfoInputs.cache
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.AssemblyInfo.cs
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.CoreCompileInputs.cache
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.Up2Date
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.dll
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\refint\GUI.dll
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.pdb
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.genruntimeconfig.cache
 C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\ref\GUI.dll
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.dashboard.resources
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.loading_screen.resources
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.login.resources
+C:\Users\Nielle\Documents\Programming shit\C#\GUI\GUI\obj\Debug\net8.0-windows\GUI.register.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\refint\GUI.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.pdb
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\WOW.deps.json
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\WOW.runtimeconfig.json
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\WOW.exe
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\GUI.exe
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\GUI.deps.json
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\GUI.runtimeconfig.json
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\GUI.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\GUI.pdb
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\BouncyCastle.Crypto.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\BouncyCastle.Cryptography.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Google.Protobuf.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.barcodes.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.bouncy-castle-connector.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.forms.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.io.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.kernel.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.layout.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.pdfa.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.pdfua.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.sign.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.styledxmlparser.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.svg.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\bc-fips-1.0.2.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\bcpkix-fips-1.0.2.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.bouncy-castle-fips-adapter.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itext.commons.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\itextsharp.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\K4os.Compression.LZ4.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\K4os.Compression.LZ4.Streams.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\K4os.Hash.xxHash.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.DotNet.PlatformAbstractions.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.DependencyModel.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Logging.Abstractions.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Microsoft.Extensions.Primitives.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\MySql.Data.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\System.IO.Pipelines.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\ZstdSharp.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\comerr64.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\gssapi64.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\k5sprt64.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\krb5_64.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\runtimes\win-x64\native\krbcc64.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\WOW.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\bin\Debug\net8.0-windows\WOW.pdb
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.AssemblyReference.cache
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.ceafa.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.cit.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.coe.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.dashboard.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.Form1.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.cics.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.loading_screen.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.log.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.login.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.Properties.Resources.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.register.resources
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.GenerateResource.cache
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.GeneratedMSBuildEditorConfig.editorconfig
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.AssemblyInfoInputs.cache
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.AssemblyInfo.cs
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.CoreCompileInputs.cache
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.csproj.Up2Date
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.genruntimeconfig.cache
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\ref\GUI.dll
+D:\HDD\School\Parking System Files C#\AOOP\GUI\GUI\obj\Debug\net8.0-windows\GUI.accounts.resources
